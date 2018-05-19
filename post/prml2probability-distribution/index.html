@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.40.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>PRML读书笔记：2.Probability Distribution - Space X</title>
+    <meta property="og:title" content="PRML读书笔记：2.Probability Distribution - Space X">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-05-26T22:33:19&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-05-26T22:33:19&#43;08:00">
+        
+    <meta name="description" content="PRML读书笔记：2.Probability Distribution">
+        <meta name="author" content="yyBeta">
+        
+    <meta property="og:url" content="https://yybeta.github.io/post/prml2probability-distribution/">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+    <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://yybeta.github.io/">
+                        Space X
+                    </a>
+                
+                <p class="description">A geek, studying Data Mining and Machine Learning</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://yybeta.github.io/">博客</a>
+                    
+                    <a  href="https://yybeta.github.io/about/" title="关于">
+                        关于
+                    </a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">PRML读书笔记：2.Probability Distribution</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年5月26日
+                            22:33
+                        </date>
+                        
+                        <div class="post-meta meta-category">
+                            ，归类于
+                            
+                                <a href="/categories/%E6%AC%A1%E5%85%83%E7%88%B1">次元爱</a>
+                            
+                        </div>
+                        
+                        <div class="post-content">
+                            
+
+<h4 id="二-probability-distributions">二. Probability Distributions</h4>
+
+<ol>
+<li><p>二元变量</p>
+
+<ul>
+<li><p>共轭性：<strong>后验概率分布（正比于先验和似然函数的乘积）与引入的先验分布有着相同的函数形式</strong>，是一种用来简化贝叶斯分析的人为设计</p></li>
+
+<li><p>Beta分布：二项分布$Bin(m|N,\mu)=\binom{N}{m}\mu^m(1-\mu)^{N-m}$ ，为了避免小规模数据所求得参数$\mu$的最大似然解引起的过拟合需要对$\mu$假设一个先验分布，为了保证共轭性，以及 $\int_0^1Beta(\mu|a,b)d\mu=1$的归一化性质，构造了先验分布：
+$$
+Beta(\mu|a,b)=\frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}\mu^{a-1}(1-\mu)^{b-1}
+$$</p></li>
+</ul>
+
+<blockquote>
+<p>Beta分布的均值和方差：$\mathbb{E}[\mu]=\frac{a}{a+b},var[\mu]=\frac{ab}{(a+b)^2(a+b+1)}$</p>
+</blockquote>
+
+<p>因此，由贝叶斯定理后验正比于先验与似然的积，并根据其与Beta分布的共轭性可以归一化得：
+$$
+p(\mu|m,l,a,b)=\frac{\Gamma(m+a+l+b)}{\Gamma(m+a)\Gamma(l+b)}\mu^{m+a-1}(1-\mu)^{l+b-1},l=N-m
+$$
+仍是一个Beta分布 $Beta(\mu|m+a,l+b)$</p>
+
+<p>由此，可以不停地将后验变为下一次或者下一批学习过程中的先验，因此这种顺序方法对大数据集有用，可以转化成顺序的框架（个人理解是在线学习/数据流那种应用）</p>
+
+<blockquote>
+<p>贝叶斯的结果和最大似然的结果在数据集的规模趋于无穷的情况下会统一到一起
+通常，随着观测到越来越多的数据，后验概率表⽰的不确定性将会持续下降</p>
+</blockquote></li>
+
+<li><p>多项式变量</p>
+
+<ul>
+<li>狄利克雷分布：多项式分布 $Mult(m_1,m_2,&hellip;,m_K|\pmb\mu ,N)=\binom{N}{m_1m_2&hellip;m_K}\prod_{k=1}^K\mu_k^{m_k}$ ，同“二元变量”中所述原因，可构造共轭先验：
+$$
+Dir(\pmb{\mu|\alpha})=\frac{\Gamma(\alpha_0)}{\Gamma(\alpha_1)&hellip;\Gamma(\alpha_K)}\prod_{k=1}^K\mu_k^{\alpha_k-1},\alpha_0=\sum_{k=1}^K\alpha_k
+$$
+同理，由贝叶斯定理得到的归一化的后验分布仍是一个狄利克雷分布：
+$$
+p(\pmb\mu|\mathcal D,\alpha)=Dir(\pmb{\mu|\alpha+m})=\frac{\Gamma(\alpha_0+N)}{\Gamma(\alpha_1+m_1)&hellip;\Gamma(\alpha_K+m_K)}\prod_{k=1}^K\mu_k^{\alpha_k+m_k-1}
+$$</li>
+</ul>
+
+<blockquote>
+<p>有两个状态的变量既可表示为二元变量用二项分布建模也可表示为1-of-2变量用多项式分布建模</p>
+</blockquote></li>
+
+<li><p>高斯分布</p>
+
+<ul>
+<li><p>一元高斯分布：
+$$
+\mathcal N(x|\mu,\sigma^2)=\frac{1}{(2\pi\sigma^2)^{\frac{1}{2}}}exp{-\frac{1}{2\sigma^2}(x-\mu)^2}
+$$</p></li>
+
+<li><p>多元高斯分布：
+$$
+\mathcal N(\pmb{x|\mu, \Sigma})=\frac{1}{(2\pi)^{\frac{D}{2}}|\pmb\Sigma|^\frac{1}{2}}exp{-\frac{1}{2}(\pmb{x-\mu})^T\pmb\Sigma^{-1}(\pmb{x-\mu})}
+$$
+令$\Delta^2=(\pmb{x-\mu})^T\pmb\Sigma^{-1}(\pmb{x-\mu})$ ，其中 $\Delta$叫做 $\pmb{\mu,x}$ 间的<code>马氏距离</code></p></li>
+</ul>
+
+<blockquote>
+<p>当协方差矩阵 $\pmb\Sigma$ 为单位矩阵时就变成了欧氏距离</p>
+</blockquote>
+
+<ul>
+<li>$\lambda_i$ 为 $\pmb{\Sigma}$ 的特征向量 $\pmb u_i$ 对应的特征值，则有 $\pmb\Sigma=\sum_{i=1}^D\lambda_i\pmb u_i\pmb u_i^T$</li>
+</ul>
+
+<p>把协方差矩阵的逆 $\pmb\Sigma^{-1}=\sum_{i=1}^D\frac{1}{\lambda_i}\pmb u_i\pmb u_i^T$ 带入上式 $\Delta^2$得到以协方差矩阵的特征值平方根为轴长的标准椭圆方程 $\Delta^2=\sum_{i=1}^D\frac{y_i^2}{\lambda_i}$ ，其中 $y_i=\pmb u_i^T(\pmb{x-\mu})$</p>
+
+<p>那么 $\pmb{y=U(x-\mu)}$ 即原来的坐标系经平移和旋转得到</p>
+
+<p>定义 $\pmb J$ ，其元素 $J_{ij}=\frac{\partial x_i}{\partial y_i}=U_{ij}$，则有 $|\pmb J^2|=|\pmb U^T|^2=1$，又由 $|\pmb\Sigma|^{\frac{1}{2}}=\prod_{j=1}^D\lambda_j^\frac{1}{2}$ ，$y_j$ 坐标系下高斯分布的形式为：
+$$
+p(\pmb y)=p(\pmb x)|\pmb J|=\prod_{j=1}^D\frac{1}{(2\pi\lambda_j)^\frac{1}{2}}exp{-\frac{y_j^2}{2\lambda_j}}
+$$</p>
+
+<blockquote>
+<p>可以证明， $\mathbb E[\pmb x]=\pmb\mu,\mathbb E[\pmb{xx}^T]=\pmb{xx}^T+\pmb\Sigma,var[\pmb x]=\pmb\Sigma$</p>
+</blockquote>
+
+<ul>
+<li>高斯分布密度函数的指数项是 $\pmb x$ 的二次函数，进一步展开为 $-\frac{1}{2}\Delta^2=-\frac{1}{2}(\pmb x^T\pmb\Sigma^{-1}\pmb x-2\pmb x^T\pmb\Sigma^{-1}\pmb\mu+const)$ ，其中 $const$ 是不必关心的常数。那么，**如果已知一个随机变量服从高斯分布，那么只需找到指数项的二次部分和一次部分，就可以知道分布的均值和方差 **。</li>
+</ul>
+
+<p>高斯分布有一个重要特性：如果联合分布$p(\pmb x_a,\pmb x_b)$ 是高斯分布，那么条件概率分布 $p(\pmb x_a|\pmb x_b)$ 也是高斯分布；同样，任何一组随机变量的边缘分布也是高斯分布</p>
+
+<p>给定一个联合高斯分布 $\mathcal{N}(\pmb{x|\mu, \Sigma})$ ，其中 $\pmb\Lambda\equiv\pmb\Sigma^{-1}$ ，且
+$$
+\pmb x=\begin{pmatrix}\pmb x_a\\\pmb x_b\end{pmatrix},\pmb\mu=\begin{pmatrix}\pmb\mu_a\\\pmb\mu_b\end{pmatrix},\pmb\Sigma=\begin{pmatrix}\pmb\Sigma_{aa}&amp;\pmb\Sigma_{ab}\\\pmb\Sigma_{ba}&amp;\pmb\Sigma_{bb}\end{pmatrix},\pmb\Lambda=\begin{pmatrix}\pmb\Lambda_{aa}&amp;\pmb\Lambda_{ab}\\\pmb\Lambda_{ba}&amp;\pmb\Lambda_{bb}\end{pmatrix}
+$$</p>
+
+<ul>
+<li>条件高斯分布：通过将指数项（忽略系数-1/2）分块展开得到三部分：
+$$
+(\pmb{x-\mu})^T\pmb\Sigma^{-1}(\pmb{x-\mu})=\begin{pmatrix}\pmb x_a-\pmb\mu_a\\\pmb x_b-\pmb\mu_b\end{pmatrix}^T\begin{pmatrix}\pmb\Lambda_{aa}&amp;\pmb\Lambda_{ab}\\\pmb\Lambda_{ba}&amp;\pmb\Lambda_{bb}\end{pmatrix}\begin{pmatrix}\pmb x_a-\pmb\mu_a\\\pmb x_b-\pmb\mu_b\end{pmatrix}\\=(\pmb x_a-\pmb\mu_a)^T\pmb\Lambda_{aa}(\pmb x_a-\pmb\mu_a)+2(\pmb x_a-\pmb\mu_a)^T\pmb\Lambda_{ab}(\pmb x_b-\pmb\mu_b)+(\pmb x_b-\pmb\mu_b)^T\pmb\Lambda_{bb}(\pmb x_b-\pmb\mu_b)
+$$
+把 $\pmb x_a$ 以外变量都看作已知量，由指数项性质，找到 $\pmb x_a$ 的二次项 $\pmb x_a^T\pmb\Lambda_{aa}\pmb x_a$  ，再找出一次项 $-2\pmb x_a[\pmb\Lambda_{aa}\pmb\mu_a-\pmb\Lambda_{ab}(\pmb x_b-\pmb \mu_b)]$ ，由上述指数项性质，得到条件高斯分布的方差和均值：
+$$
+\pmb\Sigma_{a|b}=\pmb\Lambda_{aa}^{-1},\pmb\mu_{a|b}=\pmb\mu_a-\pmb\Lambda_{aa}^{-1}\pmb\Lambda_{ab}(\pmb x_b-\pmb\mu_b)
+$$
+所以，条件高斯分布为
+$$
+p(\pmb x_a|\pmb x_b)=\mathcal N (\pmb x_a|\pmb\mu_{a|b},\pmb\Lambda_{aa}^{-1})\\\pmb\mu_{a|b}=\pmb\mu_a-\pmb\Lambda_{aa}^{-1}\pmb\Lambda_{ab}(\pmb x_b-\pmb\mu_b)=\pmb\mu_a+\pmb\Sigma_{ab}\pmb\Sigma_{bb}^{-1}(\pmb x_b-\pmb\mu_b)
+$$</li>
+</ul>
+
+<p>所以<strong>线性高斯模型 $p(\pmb {y|x})$ 的均值是 $\pmb x$ 的线性函数，协方差与 $\pmb x$ 独立</strong></p>
+
+<ul>
+<li>边缘高斯分布：</li>
+</ul>
+
+<p>$$
+p(\pmb x_a)=\int p(\pmb x_a,\pmb x_b)d\pmb x_b=\mathcal N(\pmb x_a|\pmb\mu_a,\pmb\Sigma_{aa})
+$$</p>
+
+<blockquote>
+<p>所以 $\mathbb E[\pmb x_a]=\pmb\mu_a,cov[\pmb x_a]=\pmb\Sigma_{aa}$ ，上述也可由贝叶斯定理 $p(\pmb x_a)=\frac{p(\pmb x_a,\pmb x_b)}{p(\pmb x_b|\pmb x_a)}$ 推导</p>
+</blockquote>
+
+<ul>
+<li><p>高斯变量的贝叶斯定理： 已知边缘分布 $p(\pmb x)=\mathcal N(\pmb{x|\mu,\Lambda}^{-1})$ 和条件分布 $p(\pmb{y|x})=\mathcal N(\pmb{y|Ax+b,L}^{-1})$ ，求解边缘分布 $p(\pmb y)$ 以及后验分布 $p(\pmb{x|y})$ ，可先求解联合分布 $p(\pmb{x,y})$ 。定义 $\pmb z=\begin{pmatrix}\pmb x\\\pmb y\end{pmatrix}$ ，则
+$$
+\ln p(\pmb z)=\ln p(\pmb x)+\ln p(\pmb{y|x})\\=-\frac{1}{2}[(\pmb{x-\mu})^T\pmb\Lambda(\pmb{x-\mu})+(\pmb{y-Ax-b})^T\pmb L(\pmb{y-Ax-b})]+const
+$$
+我们需要找出形如 $\begin{pmatrix}\pmb x\\\pmb y\end{pmatrix}^T\begin{pmatrix}\pmb ?_{xx}&amp;\pmb ?_{xy}\\\pmb ?_{yx}&amp;\pmb ?_{yy}\end{pmatrix}\begin{pmatrix}\pmb x\\\pmb y\end{pmatrix}$ 的二次项和形如 $-2\begin{pmatrix}\pmb x\\\pmb y\end{pmatrix}^T\pmb ?$ 的一次项来确定 $\pmb z$ 的均值和方差，展开上式方括号可得关于 $\pmb x$ 的二次项系数 $\pmb ?_{xx}=\pmb{\Lambda+A}^T\pmb{LA}$ 以及另外三个系数，因此得到 $\pmb z$ 的精度矩阵（协方差的逆矩阵）为：
+$$
+\pmb R=\begin{pmatrix}\pmb{\Lambda+A}^T\pmb{LA}&amp;-\pmb A^T\pmb L\\-\pmb{LA}&amp;\pmb L\end{pmatrix}
+$$
+求逆可得关于 $\pmb z$ 的方差矩阵，再通过一次项系数可求得其分布均值，即
+$$
+\mathbb E(\pmb z)=\begin{pmatrix}\pmb\mu\\\pmb{A\mu+b}\end{pmatrix},cov(\pmb z)=\begin{pmatrix}\pmb\Lambda^{-1}&amp;\pmb\Lambda^{-1}\pmb A^T\\\pmb{A\Lambda}^{-1}&amp;\pmb L^{-1}+\pmb{A\Lambda}^{-1}\pmb A^T\end{pmatrix}
+$$
+则由边缘高斯分布中与条件高斯分布中的结论可得：
+$$
+p(\pmb y)=\mathcal N(\pmb{A\mu+b,L}^{-1}+\pmb{A\Lambda}^{-1}\pmb A^T)\\p(\pmb{x|y})=\mathcal N(\pmb{x|\Sigma}{\pmb A^T\pmb{L(y-b)+\Lambda\mu},\Sigma}),\pmb\Sigma=\pmb{(\Lambda+A}^T\pmb{LA})^{-1}
+$$</p></li>
+
+<li><p>高斯分布的最大似然估计：给定数据集 $\pmb X=(\pmb x_1,&hellip;,\pmb x_N)^T$ ，则其对数似然为
+$$
+\ln p(\pmb{X|\mu,\Sigma})=-\frac{ND}{2}\ln(2\pi)-\frac{N}{2}\ln|\pmb\Sigma|-\frac{1}{2}\sum_{n=1}^N(\pmb x_n-\pmb\mu)^T\pmb\Sigma^{-1}(\pmb x_n-\pmb\mu)
+$$
+从而可求得均值和方差的最大似然估计 $\pmb\mu_{ML}=\frac{1}{N}\sum_{n=1}^N\pmb x_n,\pmb\Sigma_{ML}=\frac{1}{N}\sum_{n=1}^N(\pmb x_n-\pmb\mu_{ML})(\pmb x_n-\pmb\mu_{ML})^T$ ，同一元高斯分布，对方差估计量进行无偏修正后变为 $\pmb{\tilde\Sigma}=\frac{N}{N-1}\pmb\Sigma_{ML}=\pmb\mu_{ML}=\frac{1}{N}\sum_{n=1}^N\pmb x_n,\pmb\Sigma_{ML}=\frac{1}{N-1}\sum_{n=1}^N(\pmb x_n-\pmb\mu_{ML})(\pmb x_n-\pmb\mu_{ML})^T$</p></li>
+
+<li><p>高斯分布的贝叶斯推断：</p></li>
+</ul>
+
+<p>前面已经提到，伯努利分布和多项式分布的共轭先验分别是Beta分布和狄利克雷分布，类似地，可以设计出以下几种情况的共轭先验：</p>
+
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>观测值分布</th>
+<th align="left">共轭先验</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>$\sigma$ 已知，推断 $\mu$ 的分布</td>
+<td>一元高斯分布</td>
+<td align="left">一元高斯分布</td>
+</tr>
+
+<tr>
+<td>$\pmb\Sigma$ 已知，推断 $\pmb\mu$ 的分布</td>
+<td>多元高斯分布</td>
+<td align="left">多元高斯分布</td>
+</tr>
+
+<tr>
+<td>$\mu$ 已知，推断 $\lambda=\frac{1}{\sigma^2}$ 的分布</td>
+<td>一元高斯分布</td>
+<td align="left">Gamma分布</td>
+</tr>
+
+<tr>
+<td>$\pmb\mu$ 已知，推断 $\pmb{\Lambda=\Sigma}^{-1}$ 的分布</td>
+<td>多元高斯分布</td>
+<td align="left">Wishart分布</td>
+</tr>
+
+<tr>
+<td>$\mu,\sigma$ 都未知，推断 $(\mu,\lambda)$ 联合分布</td>
+<td>一元高斯分布</td>
+<td align="left">高斯-Gamma分布</td>
+</tr>
+
+<tr>
+<td>$\pmb{\mu,\Sigma}$ 都未知，推断 $(\pmb{\mu,\Sigma})$ 联合分布</td>
+<td>多元高斯分布</td>
+<td align="left">高斯-Wishart分布</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>学生t分布：给定一个一元高斯分布 $\mathcal N(x|\mu,\tau^{-1})$ 和一个Gamma先验分布 $Gam(\tau|a,b)$ ，把精度积出来， $p(x|\mu,a,b)=\int_0^\infty\mathcal N(x|\mu,\tau^{-1})Gam(\tau|a,b)d\tau$ ，并定义新的参数 $\nu=2a,\lambda=\frac{a}{b}$，可以得到 $x$ 的边缘分布：
+$$
+St(x|\mu,\lambda,\nu)=\frac{\Gamma(\frac{\nu}{2}+\frac{1}{2})}{\Gamma(\frac{\nu}{2})}\left(\frac{\lambda}{\pi\nu}\right)^{\frac{1}{2}}\left[1+\frac{\lambda(x-\mu)^{2}}{\nu}\right]^{-\frac{\nu}{2}-\frac{1}{2}}
+$$
+成称为学生t分布，t分布其实是由无限个均值相同方差不同的高斯分布混合而成，高斯分布是它的特例，它相较高斯分布抗离群点干扰的鲁棒性要强很多</li>
+</ul>
+
+<blockquote>
+<p>回归的最小平方方法对应于条件高斯分布下的最大似然解，因此不具有鲁棒性，因此通过让回归模型基于一个长尾的概率分布（如t分布）可得到更鲁棒的模型</p>
+</blockquote>
+
+<p>多变量学生t分布（其中 $\Delta ^{2}=(\pmb{x-\mu})^{T}\pmb\Lambda(\pmb{x-\mu})$ 平方马氏距离， $\nu$ 称自由度）：
+$$
+St(\pmb x|\pmb{\mu,\Lambda},\nu)=\frac{\Gamma(\frac{D}{2}+\frac{\nu}{2})}{\Gamma(\frac{\nu}{2})}\frac{|\Lambda|^{\frac{1}{2}}}{(\pi\nu)^{\frac{D}{2}}}\left[1+\frac{\Delta ^{2}}{\nu}\right]^{-\frac{D}{2}-\frac{\nu}{2}}
+$$</p>
+
+<blockquote>
+<p>$mode[\pmb x]=\pmb\mu$ ；如果 $\nu&gt;1$ 则 $\mathbb E[\pmb x]=\pmb\mu$ ； $\nu&gt;2$ 则 $cov[\pmb x]=\frac{\nu}{\nu-2}\pmb\Sigma^{-1}$</p>
+</blockquote>
+
+<ul>
+<li>周期变量：高斯分布对于周期性变量的概率分布拟合效果差，可以推广高斯分布的形式，得到von Mises分布。假设周期为 $2\pi$ ，这个分布考虑的变量的概率分布满足几个条件： $p(\theta)\ge0,\int_0^{2\pi}p(\theta)d\theta=1,p(\theta+2\pi)=p(\theta)$ ，则由原始二维正太分布 $p(x_1,x_2)=\mathcal N((\mu_1,\mu_2)|\sigma^2\pmb I)$ 进行极坐标转换并把分布限制在单位圆 $r=1$ 上，得到的von Mises分布即环形正态分布为（ $m=\frac{r_0}{\sigma^2}$ ）：
+$$
+p(\theta|\theta_0,m)=\frac{1}{2\pi I_0(m)}exp{mcos(\theta - \theta_0)},I_0(m)=\frac{1}{2\pi}\int_0^{2\pi}exp{ mcos\theta}d\theta
+$$
+则可通过对数似然函数 $\ln p(D|\theta_0,m)=-N\ln(2\pi)-N\ln I_0(m)+m\sum_{n=1}^{N}cos(\theta_{n}-\theta_0)$ 求解参数的最大似然估计得：
+<br /></li>
+</ul>
+
+<p>$$
+\theta_0^{ML}=tan^{-1}\left\{\frac{\sum_nsin\theta_n}{\sum_ncos\theta_n}\right\}\\A(m_{ML})=( \frac{1}{N}\sum_{n=1}^Ncos\theta_n)cos\theta_0^{ML}+( \frac{1}{N}\sum_{n=1}^Nsin \theta_n)sin\theta_0^{ML}
+$$</p>
+
+<p>其中 $A(m)=\frac{I_1(m)}{I_0(m)},I_1(m)=I_0&rsquo;(m)$</p>
+
+<blockquote>
+<p><del>这里没看懂关于m的最大似然求解方法</del> 。von Mises分布的一个局限性是它是单峰的。但通过将多个von Mises分布混合就可以得到能对多个峰值的周期变量进行建模的灵活框架</p>
+</blockquote>
+
+<ul>
+<li>混合高斯模型：将多个基本的概率分布（例如高斯分布）进行线性组合的叠加方法为混合分布。则 $K$ 个高斯概率密度的叠加 $p(\pmb x)=\sum_{k=1}^K\pi_k\mathcal N(\pmb{x| \mu}_k,\pmb\Sigma_k)$ （混合系数 $\pi_k$ 满足 $\sum_{k=1}^K\pi_k=1$）被称为混合高斯。当把 $p(k)=\pi_k$ 看成选择 $k$ 个成分的先验概率，把密度 $p(\pmb x|k)=\mathcal N(\pmb{x|\mu}_k,\pmb\Sigma_k)$ 看成以 $k$ 为条件的 $\pmb x$ 的概率，则对应的后验概率 （也被称作“责任”）为：
+$$
+\gamma_k(x)\equiv p(k|\pmb x)=\frac{p(k)p(\pmb x|k)}{\sum_lp(l)p(\pmb x|l)}=\frac{\pi_k\mathcal N(\pmb{x|\mu}_k,\pmb\Sigma_k)}{\sum _l\pi_l\mathcal N(\pmb{x|\mu}_l,\pmb\Sigma_{l})}
+$$</li>
+</ul>
+
+<blockquote>
+<p>高斯混合分布的形式可由参数 $\pmb\pi={\pi_1,&hellip;,\pi_K},\pmb\mu={\pmb\mu_1,&hellip;,\pmb\mu_k},\pmb\Sigma={\pmb\Sigma_1,&hellip;,\pmb\Sigma_k}$ 控制，但更高维度的参数导致最大似然解不再闭式，得用迭代数值优化或期望最大化框架求解</p>
+</blockquote></li>
+
+<li><p>指数族分布</p>
+
+<ul>
+<li><p>之前提到的除高斯混合分布的概率分布都是一类称作指数族分布的分布，都可以通过替换与变形写成标准的参数为 $\pmb\eta$ 的变量 $\pmb x$   的指数分布 $p(\pmb{x|\eta})=h(\pmb x)g(\pmb\eta)exp{\pmb\eta^T\pmb{u(x)}}$</p></li>
+
+<li><p>最大似然与充分统计量：对独立同分布的一组数据 $\pmb X={\pmb x_1,&hellip;,\pmb x_N}$ ，通过求解最大对数似然 $\ln p(\pmb{X|\eta})$ 可得到最大似然估计 $\pmb\eta_{ML}$ 满足的条件： $-\triangledown g(\pmb\eta_{ML})=\frac{1}{N}\sum_{n=1}^N\pmb{u(x}_{n})$ ，并可以由此得到 $\pmb\eta$ 的最大似然解，其中 $\sum_n\pmb{u(x}_n)$ 被称作该指数族分布的充分统计量</p></li>
+
+<li><p>共轭先验：对于指数族分布，总能找到其共轭先验 $p(\pmb{\eta|\chi},\nu)=f(\pmb\chi, \nu)g(\pmb\eta)^{\nu}exp{ \nu\pmb\eta^{T}\pmb\chi}$ ，其中 $f(\pmb\chi, \nu)$ 是归一化系数， $g(\pmb\eta)$ 与标准指数族分布中含义相同</p></li>
+
+<li><p>无信息先验：在许多情形下，我们可能对分布应该具有的形式⼏乎完全不知道。这时，我们可以寻找⼀种形式的先验分布，被称为⽆信息先验。这种先验分布的⽬的是尽量对后验分布产⽣尽可能⼩的影响，这种方法会存在两个困难：（1）对于参数是连续变量的情况，参数的取值范围可能是无界的，那么先验分布无法被正确归一化；（2）概率分布中存在非线性变量的概率密度的变换，会导致概率密度无法归一化</p></li>
+</ul></li>
+
+<li><p>非参数化方法</p>
+
+<ul>
+<li><p>之前的估计分布都是带参数的，一旦所选的模型与数据真是分布有差异，将造成不可逆的影响</p></li>
+
+<li><p>直方图拟合分布：这种方法把变量 $x$ 划分成不同的宽度为 $\Delta i$ 的箱⼦，然后对落在第 $i$ 个箱⼦中的 $x$ 的观测数量 $n_i$ 进⾏计数。为了把这种计数转换成归⼀化的概率密度，我们简单地把观测数量除以观测的总数 $N$ ，再除以箱⼦的宽度 $\Delta i$ ，得到每个箱⼦的概率的值 $p_i=\frac{n_i}{N\Delta_i}$</p></li>
+</ul>
+
+<blockquote>
+<p>优点：⼀旦直⽅图被计算出来数据本⾝就被丢弃，当数据量很⼤的时候会很有优势。并且直⽅图⽅法也很容易应⽤到数据顺序到达的情形；缺点：受到所选bin的大小的影响。△过小时概率密度模型有很多尖刺，很多结构没有出现在⽣成数据的概率分布中。△过⼤时概率模型过于平滑⽆法描述细节，且往往只能模拟离散数据</p>
+</blockquote>
+
+<ul>
+<li>核密度估计与近邻密度估计：考虑一未知概率分布 $p(x)$ ，分析它包含 $x$ 的某小区域 $R$ ，则区域的概率质量 $P=\int_Rp(x)dx$ 。假设收集了 $N$ 次观测，则其中有 $K$ 次在 $R$ 里的概率服从二项分布 $Bin(K|N,P)$ ，所以当观测次数 $N$ 很大区域 $R$ 又很小时可得 $p(x)=\frac{K}{NV}$ 。从而，通过固定 $K$ 确定 $V$ 和固定 $V$ 确定 $K$ 就分别得到核方法和K近邻方法</li>
+</ul></li>
+</ol>
+
+                        </div>
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="/tags/machine-learning">machine learning</a></li>
+                                
+                                <li><a href="/tags/prml">PRML</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        
+<form id="search" method="POST" action="https://duckduckgo.com/">
+      
+      <input type="text" name="q" maxlength="255" placeholder="搜索...">
+      
+      <input type="hidden" name="sites" value="https://yybeta.github.io/">
+      
+      <input type="hidden" name="kp" value="-2">
+      
+      <input type="hidden" name="kh" value="1">
+      
+      <input type="hidden" name="kl" value="wt-wt">
+      
+      <input type="hidden" name="kg" value="p">
+      
+      <input type="hidden" name="kaf" value="1">
+      
+      
+      <input type="hidden" name="k1" value="-1">
+
+      
+
+      
+      
+      <input type="hidden" name="k7" value="#ffffff">
+      
+      <input type="hidden" name="kj" value="#ffffff">
+      
+      <input type="hidden" name="ky" value="#eaeaea">
+      
+      <input type="hidden" name="kx" value="#6E7173">
+      
+      <input type="hidden" name="k8" value="#444">
+      
+      <input type="hidden" name="k9" value="#6E7173">
+      
+      <input type="hidden" name="kaa" value="#6E7173">
+      
+      <input type="hidden" name="kae" value="#6E7173">
+
+      
+      <input type="hidden" name="ko" value="1">
+      
+      <input type="hidden" name="kt" value="n">
+      
+      <input type="hidden" name="ka" value="g">
+      
+      <input type="hidden" name="ks" value="l">
+      
+      <input type="hidden" name="kv" value="1">
+
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+        <ul class="widget-list">
+            
+            <li>
+                <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%85">代码宅</a>
+            </li>
+            
+            <li>
+                <a href="/categories/%E6%AC%A1%E5%85%83%E7%88%B1">次元爱</a>
+            </li>
+            
+            <li>
+                <a href="/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5">碎碎念</a>
+            </li>
+            
+        </ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2018 <a rel="nofollow" href="https://yybeta.github.io/">Space X</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io">Hugo</a>.
+        <a rel="nofollow noreferer noopener" href="https://github.com/JokerQyou/maupassant-hugo">Theme</a> based on <a rel="nofollow noreferer noopener" href="https://github.com/JokerQyou/maupassant-hugo">maupassant</a>.
+    </div>
+</footer>
+
+
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+<script type="text/javascript" src="/js/prism.js" async="true"></script>
+
+
+</body>
+</html>

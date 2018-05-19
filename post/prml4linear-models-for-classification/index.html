@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.40.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>PRML读书笔记：4.Linear Models for Classification - Space X</title>
+    <meta property="og:title" content="PRML读书笔记：4.Linear Models for Classification - Space X">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-06-09T21:00:39&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-06-09T21:00:39&#43;08:00">
+        
+    <meta name="description" content="PRML读书笔记：4.Linear Models for Classification">
+        <meta name="author" content="yyBeta">
+        
+    <meta property="og:url" content="https://yybeta.github.io/post/prml4linear-models-for-classification/">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+    <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://yybeta.github.io/">
+                        Space X
+                    </a>
+                
+                <p class="description">A geek, studying Data Mining and Machine Learning</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://yybeta.github.io/">博客</a>
+                    
+                    <a  href="https://yybeta.github.io/about/" title="关于">
+                        关于
+                    </a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">PRML读书笔记：4.Linear Models for Classification</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年6月9日
+                            21:00
+                        </date>
+                        
+                        <div class="post-meta meta-category">
+                            ，归类于
+                            
+                                <a href="/categories/%E6%AC%A1%E5%85%83%E7%88%B1">次元爱</a>
+                            
+                        </div>
+                        
+                        <div class="post-content">
+                            
+
+<h4 id="四-linear-models-for-classification">四. Linear Models for Classification</h4>
+
+<ol>
+<li><p>判别函数</p>
+
+<ul>
+<li><p>二分类：线性判别函数的最简单形式是输入向量的线性函数 $y(\pmb x)=\pmb w^T\pmb x+w_0$ ，对应的决策边界由 $y(\pmb x)=0$ 确定，即 $D$ 维空间里的一个 $(D-1)$ 维超平面，由距离公式，点 $\pmb x$ 到决策边界超平面的距离为 $r=\frac{y(\pmb x)}{||\pmb w||}$</p></li>
+
+<li><p>多分类：对 $K$ 个类别进行分类，有常见的OVO训练 $\frac{K(K-1)}{2}$ 个决策边界进行分类和OVR训练 $K-1$ 个决策边界进行分类，但这两种都会出现不能得出分类的情况，所以有了训练$K$ 个决策边界并考虑置信度的不存在上述不能分类的模糊区域的方式</p></li>
+</ul>
+
+<blockquote>
+<p>书中置信度取的是 $y_k(\pmb x)=\pmb w_k^T\pmb x+w_{k0}$ ，因此任两类 $j,k$ 的决策边界为 $y_j(\pmb x)=y_k(\pmb x)$ ，即 $(\pmb w_k-\pmb w_j)^T\pmb x+(w_{k0}-w_{j0})=0$ 。个人觉得置信度更宜取 $r_k=\frac{y_k(\pmb x)}{||\pmb w_k||}$</p>
+</blockquote>
+
+<ul>
+<li>用于分类的最小平方法：将 $K$ 分类问题的目标向量 $\pmb t$ 直接用“1-of-K”二元表示方式，每个类别 $C_k$ 由自己的线性模型 $y_k(\pmb x)=\pmb w_k^T\pmb x+w_{k0}$ 描述，则令 $\tilde{\pmb w}_k=(w_{k0},\pmb w_k^T)^T,\tilde{\pmb x}=(1,\pmb x^T)^T$ ，则由 $\tilde{\pmb w}_k$ 作为第 $k$ 列拼成的矩阵 $\tilde{\pmb W}$ 得到 $K$ 分类的判别函数 $\pmb{y(x})=\tilde{\pmb W}^T\tilde{\pmb x}$ 。则若以 $\tilde{\pmb x}_n^T$ 作为第n行拼成矩阵 $\tilde{\pmb X}$ 则平方和误差函数为：
+$$
+E_{D}(\tilde{\pmb W})=\frac{1}{2}Tr\{(\tilde{\pmb X}\tilde{\pmb W}-\pmb T)^T(\tilde{\pmb X}\tilde{\pmb W}-\pmb T)\}
+$$
+对其最小化可得闭式解
+$$
+\tilde{\pmb W}=(\tilde{\pmb X}^T\tilde{\pmb X})^{-1}\tilde{\pmb X}^T\pmb T=\tilde{\pmb X}^\dagger\pmb T
+$$
+可得判别函数
+$$
+\pmb{y(x})=\tilde{\pmb W}^T\tilde{\pmb x}=\pmb T^T(\tilde{\pmb X}^\dagger)^T\tilde{\pmb x}
+$$</li>
+</ul>
+
+<blockquote>
+<p>优点：对参数给出了精确的解析解
+缺点：对于离群点缺少鲁棒性；会惩罚“过于正确”的预测，因为他们 在正确的⼀侧距离决策边界太远了；它来自于数据呈高斯分布的假设，当假设不成立，效果会相当差</p>
+</blockquote>
+
+<ul>
+<li>Fisher线性判别函数：是对投影方向的选择，目的是使类间均值的投影分开较大、类内的方差较小从而最小化类别重叠。在 $D$ 维二分类情况下，将其投影到一维 $y=\pmb w^T\pmb x$ ，将 $y\ge -w_0$ 的样本分类为 $C_1$ 其余为 $C_2$ ，两类的均值向量分别为 $\pmb m_1=\frac{1}{N_1}\sum_{n\in C_1}\pmb x_n,\pmb m_2=\frac{1}{N_2}\sum_{n\in C_2}\pmb x_n$ ，则投影后类间方差即均值距离为 $m_2-m_1=\pmb w^T(\pmb m_2-\pmb m_1)$ ，各类内方差为 $ s_k^2=\sum_{n\in C_k}(y_n-m_k)^2$ 。于是Fisher准则便为最大化类间方差与类内方差的比值：
+$$
+J(\pmb w)=\frac{(m_2-m_1)^2}{s_1^2+s_2^2}=\frac{\pmb w^T\pmb S_B\pmb w}{\pmb w^T\pmb S_W\pmb w}
+$$
+其中投影前的类间协方差矩阵 $\pmb S_B=(\pmb m_2-\pmb m_1)(\pmb m_2-\pmb m_1)^T$ ，类内协方差矩阵 $\pmb S_W=\sum_{n\in C_1}(\pmb x_n-\pmb m_1)(\pmb x_n-\pmb m_1)^T+\sum_{n\in C_2}(\pmb x_n-\pmb m_2)(\pmb x_n-\pmb m_2)^T$ ，对 $J(\pmb w)$ 求导并令导数为0得：
+$$
+(\pmb w^T\pmb S_B\pmb w)\pmb S_W\pmb w=(\pmb w^T\pmb S_W\pmb w)\pmb S_B\pmb w
+$$
+因为只关注 $\pmb w$ 方向，所以标量可以忽略，变形后得到最后的线性判别函数
+$$
+\pmb w\propto\pmb S_W^{-1}(\pmb m_2-\pmb m_1)
+$$</li>
+</ul>
+
+<blockquote>
+<p>可以证明对于二分类问题Fisher准则是最小平方的一个特例</p>
+</blockquote>
+
+<ul>
+<li><p>多分类的Fisher判别函数：同用于分类的最小平方法中，定义 $K$ 分类的判别函数： $\pmb y=\tilde{\pmb W}^T\tilde{\pmb x}$ ，类内协方差矩阵 $\pmb S_W$可以求和更多类推广到 $K$ 类，而类间协方差矩阵推广为 $\pmb S_B=\sum_KN_K(\pmb m_k-\pmb m)(\pmb m_k-\pmb m)^T$ ，其中 $N_K$ 为类 $K$ 的样本数， $\pmb m$ 为所有数据的均值向量。对投影后定义类似的矩阵得到 $\pmb S_W&rsquo;=\sum_K\sum_{n\in C_k}(\pmb y_n-\pmb\mu_k)(\pmb y_n-\pmb\mu_k)^T$ 及 $\pmb S_B&rsquo;=\sum_KN_k(\pmb\mu_k-\pmb\mu)(\pmb\mu_k-\pmb\mu)$ ，其中 $\pmb\mu_k$ 为 $K$ 类的 $\pmb y_n$ 均值 $\pmb\mu$ 为所有数据的 $\pmb y_n$ 均值。最后可以构建对应的Fisher准则，有：
+$$
+J(\pmb W)=Tr\{\pmb S_W&rsquo;^{-1}\pmb S_B&rsquo;\}=Tr\{(\pmb{WS}_W\pmb W^T)^{-1}(\pmb{WS}_B\pmb W^T)\}
+$$
+对其进行最大化求解即可得到投影矩阵 $\pmb W$ 的方向</p></li>
+
+<li><p>感知器算法：在该模型里，输入向量 $\pmb x$ 首先使用一个固定的非线性变换得到特征映射后的向量 $\pmb{\phi(x)}$ 用于构造一个一般的线性模型 $y(\pmb x)=f(\pmb w^T\pmb{\phi(x)})$ ，其中非线性激活函数为
+$$
+f(a)=\left\{\begin{matrix}+1&amp;a\ge0\\-1&amp;a<0\end{matrix}\right.
+$$
+因为激活函数分段而不使用最小平方误差准则，使用感知机准则定义损失函数
+$$
+E\_P(\pmb w)=-\sum\_{n\in\mathcal M}\pmb w^T\pmb\phi\_nt\_n
+$$
+$\mathcal M$ 为分类错误的数据集合。则 $\pmb w$ 可以采用随机梯度下降算法求解：
+$$
+\pmb w^{(\tau+1)}=\pmb w^{(\tau)}-\eta\nabla E\_P(\pmb w)=\pmb w^{(\tau)}+\eta\pmb\phi\_nt\_n
+$$
+> 当数据线性可分时感知机算法收敛，反之不收敛</p></li>
+</ul></li>
+
+<li><p>概率生成式模型</p>
+
+<ul>
+<li>生成模型将通过MAP方式对类条件概率密度 $p(\pmb x|C_k)$ 和先验概率分布 $p(C_k)$ 建模，然后使用它们通过贝叶斯定理计算后验概率密度  $p(C_k|\pmb x)$ 。对于二分类有：
+$$
+p(C_1|\pmb x)=\frac{p(\pmb x|C_1)p(C_1)}{p(\pmb x|C_1)p(C_1)+p(\pmb x|C_2)p(C_2)}=\frac{1}{1+exp(-a)}=\sigma(a)
+$$
+其中 $a=\ln\frac{p(\pmb x|C_1)p(C_1)}{p(\pmb x|C_2)p(C_2)}$ ，$\sigma(a)$ 被称作logistic sigmoid函数，对于多分类情形则有：
+$$
+p(C_k|\pmb x)=\frac{p(\pmb x|C_k)p(C_k)}{\sum_jp(\pmb x|C_j)p(C_j)}=\frac{exp(a_k)}{\sum_jexp(a_j)}
+$$
+其中 $a_k=\ln p(\pmb x|C_k)p(C_k)$</li>
+</ul>
+
+<blockquote>
+<p>这其实是softmax的形式，因为它有如下性质：如果对所有非 $k$ 的 $j$ 都有 $a_k\gg a_j$ ，那么 $p(C_k|\pmb x)\simeq1,p(C_j|\pmb x)\simeq0$</p>
+</blockquote>
+
+<ul>
+<li>连续输入：针对连续输入的情况详细讨论上述方法，首先假设类条件概率密度是高斯分布，然后假设所有类别协方差矩阵相同（只是为了简化运算和推导），则类条件概率如下：
+$$
+p(\pmb x|C_k)=\frac{1}{(2\pi)^{\frac{D}{2}}}\frac{1}{|\pmb\Sigma|^{\frac{1}{2}}}exp\{-\frac{1}{2}(\pmb{x-\mu}_k)^T\pmb\Sigma ^{-1}(\pmb{x-\mu}_k) \}
+$$
+根据前面的结论可得对二分类有
+$$
+p(C_1|\pmb x)=\sigma(\pmb w^T\pmb x+w_0)
+$$
+其中 $\pmb w=\pmb\Sigma^{-1}(\pmb\mu_1-\pmb\mu_2),w_0=-\frac{1}{2}\pmb\mu_1^T\pmb\Sigma^{-1}\pmb\mu_1+\frac{1}{2}\pmb\mu_2^T\pmb\Sigma^{-1}\pmb\mu_2+\ln\frac{p(C_1)}{p(C_2)}$ 。对于K个类别的情形则有
+$$
+a_k(\pmb x)=\pmb w_k^T\pmb x+w_{k0}
+$$
+其中 $\pmb w_k=\pmb\Sigma^{-1}\pmb\mu_k,w_{k0}=-\frac{1}{2}\pmb\mu_k^T\pmb\Sigma^{-1}\pmb\mu_k+\ln p(C_k)$ 。</li>
+</ul>
+
+<blockquote>
+<p>无论是二分类多分类，$a_k(\pmb x)$ 涉及的都是 $\pmb x$ 的线性函数，决策边界都是线性的，这来自于各类内的协方差矩阵相同的假设</p>
+</blockquote>
+
+<ul>
+<li><p>最大似然解：对于上述结论中所涉及参数的求解，我们使用MLE方法。假设二分类，给定数据集 $\{\pmb x_n,t_n\}$ ，其中 $t_n=1$ 表示属于类别 $C_1$ 且其类先验概率为 $\pi$ ， $t_n=0$ 则属于类别 $C_2$ ，设每类都服从高斯类条件概率，且同协方差，则
+$$
+p(\pmb x_n,C_1)=p(C_1)p(\pmb x_n|C_1)=\pi\mathcal N(\pmb x_n|\pmb\mu_1,\pmb\Sigma)\\p(\pmb x_n,C_2)=p(C_2)p(\pmb x_n|C_2)=(1-\pi)\mathcal N(\pmb x_n|\pmb\mu_2,\pmb\Sigma)
+$$
+构造似然函数，将是伯努力分布的形式：
+$$
+p(\pmb t,\pmb X|\pi,\pmb\mu_1,\pmb\mu_2,\pmb\Sigma)=\prod_{n=1}^N[\pi\mathcal N(\pmb x_n|\pmb\mu_1,\pmb\Sigma)]^{t_n}[(1-\pi)\mathcal N(\pmb x_n|\pmb\mu_2,\pmb\Sigma)]^{1-t_n}
+$$
+转换为对数似然，对各参数分别求导并令导数为0可得：
+$$
+\pi=\frac{1}{N}\sum_{n=1}^Nt_n=\frac{N_1}{N_1+N_2},\pmb\mu_1=\frac{1}{N_1}\sum_{n=1}^Nt_n\pmb x_n,\pmb\mu_2=\frac{1}{N_2}\sum_{n=1}^N(1-t_n)\pmb x_n\\\pmb\Sigma=\frac{N_1}{N}\pmb S_1+\frac{N_2}{N}\pmb S_2,\pmb S_k=\frac{1}{N_k}\sum_{n\in C_k}(\pmb x_n-\pmb\mu_k)(\pmb x_n-\pmb\mu_k)^T
+$$
+这里推导过程主要是分析清楚对数似然函数中包含各个参数的项分别是什么，然后逐一求解</p></li>
+
+<li><p>离散特征和指数族分布：对离散特征情况做 $x_i\in\{0,1\}$ 的二元特征假设后也可求解得到K分类问题的 $a_k(\pmb x)$ 和二分类问题的 $a$ 都是输入变量 $\pmb x$ 的线性函数。同样，做更一般的服从指数族分布的连续输入的假设也能得到该结论</p></li>
+</ul>
+
+<blockquote>
+<p>由此我们知道，无论是二分类还是多分类，无论是服从指数族分布的连续输入还是离散输入，类后验概率都是由一般的线性模型与logistic sigmoid（二分类）或者softmax（多分类）激活函数给出的</p>
+</blockquote></li>
+
+<li><p>概率判别式模型</p>
+
+<ul>
+<li><p>生成式模型的过程是分别寻找类条件概率密度和类别先验，然后使⽤贝叶斯定理。而判别式模型的过程是直接最⼤化由条件概率分布 $p(C_k|\pmb x)$ 定义的似然函数</p></li>
+
+<li><p>logistic回归：概率生成模型的形式告诉我们，后验概率可以写成logistic sigmoid嵌套线性模型的形式，从这个模型的二分类情况入手，有： $p(C_1|\pmb\phi)=y(\pmb\phi)=\sigma(\pmb w^T\pmb\phi)$ ，对于数据集 $\{\pmb\phi_n,t_n\}$ ，其中 $t_n\in\{0,1\}$ 且 $\pmb\phi_n=\pmb\phi(\pmb x_n)$ ，似然函数可写成
+$$
+p(\pmb{t|w})=\prod_{n=1}^Ny_n^{t_n}(1-y_n)^{1-t_n}
+$$
+其中 $y_n=p(C_1|\pmb\phi_n)$ ，取负对数后形成交叉熵误差函数：
+$$
+E(\pmb w)=-\ln p(\pmb{t|w})=-\sum_{n=1}^N\{t_n\ln y_n+(1-t_n)\ln(1-y_n)\}
+$$
+求导可得：
+$$
+\nabla E(\pmb w)=\sum_{n=1}^N(y_n-t_n)\pmb\phi_n
+$$
+这里数据点n对导数的贡献是目标值和模型预测值之间的“误差” $y_n-t_n$ 与基函数向量 $\pmb\phi_n$ 相乘</p></li>
+</ul>
+
+<blockquote>
+<p>最大似然求解会产生严重过拟合，且无法区分某个解是否优于另一解，解依赖于优化算法的选择和参数初始化。可以通过引入先验概率寻找 $\pmb w$ 的MAP解或等价地加入正则项避免</p>
+</blockquote>
+
+<ul>
+<li><p>迭代重加权最小平方：上面的最大似然方法无法得到解析解，因为logistic sigmoid是非线性函数，书中介绍了Newton-Raphson方法进行局部近似，它的权值更新形式为：
+$$
+\pmb w^{new}=\pmb w^{old}-\pmb H^{-1}\nabla E(\pmb w)
+$$
+其中 $\pmb H$ 为Hessian矩阵，它的元素由 $E(\pmb w)$ 关于 $\pmb w$ 的二阶导数组成，有：
+$$
+\nabla E(\pmb w)=\sum_{n=1}^N(y_n-t_n)\pmb\phi_n=\pmb\Phi^T(\pmb{y-t})\\\pmb H=\nabla\nabla E(\pmb w)=\sum_{n=1}^Ny_n(1-y_n)\pmb\phi_n\pmb\phi_n^T=\pmb\Phi^T\pmb{R\Phi}
+$$
+其中 $\pmb R$ 为 $N\times N$对角阵且 $R_{nn}=y_n(1-y_n)$ 。因此更新公式变为：
+$$
+\pmb w^{new}=\pmb w^{old}-(\pmb\Phi^T\pmb{R\Phi})^{-1}\pmb\Phi^T(\pmb{y-t})\\=(\pmb\Phi^T\pmb{R\Phi})^{-1}\{\pmb\Phi^T\pmb{R\Phi w}^{old}-\pmb\Phi^T(\pmb{y-t})\}\\=(\pmb\Phi^T\pmb{R\Phi})^{-1}\pmb\Phi^T\pmb{Rz}
+$$
+其中N维向量 $\pmb z=\pmb{\Phi w}^{old}-\pmb R^{-1}(\pmb{y-t})$ ，由于权矩阵 $\pmb R$ 依赖于 $\pmb w^{old}$ 所以需要迭代求解，所以这个算法被成为迭代重加权最小平方</p></li>
+
+<li><p>多类logistic回归：由生成式模型可知，多类情况对应的类后验概率是softmax形式即
+$$
+p(C_k|\pmb\phi)=y_k(\pmb\phi)=\frac{exp(a_k)}{\sum_jexp(a_k)}
+$$
+其中 $a_k=\pmb w_k^T\pmb\phi$ ，它对应的似然函数为：
+$$
+p(\pmb T|\pmb w_1,&hellip;,\pmb w_K)=\prod_{n=1}^N\prod_{k=1}^Kp(C_k|\pmb\phi_n)^{t_{nk}}=\prod_{n=1}^N\prod_{k=1}^Ky_{nk}^{t_{nk}}
+$$
+其中， $y_{nk}=y_k(\pmb\phi_n)$ ，$\pmb T$ 是目标变量的 $N\times K$ 矩阵，元素为 $t_{nk}$ ，取上式负对数，有
+$$
+E(\pmb w_1,&hellip;,\pmb w_K)=-\ln p(\pmb{T|w}_1,&hellip;,\pmb w_K)=-\sum_{n=1}^N\sum_{k=1}^Kt_{nk}\ln y_{nk}
+$$
+则其关于参数向量 $\pmb w_j$ 的梯度
+$$
+\nabla_{\pmb w_j}E(\pmb w_1,&hellip;,\pmb w_K)=\sum_{n=1}^N(y_{nj}-t_{nj})\pmb\phi_n
+$$
+这里梯度的形式和之前一样，为“误差”误差 $y_{nj}-t_{nj}$ 与基函数向量 $\pmb\phi_n$ 相乘</p></li>
+</ul>
+
+<blockquote>
+<p>同样可以用迭代重加权最小平方算法求解</p>
+</blockquote>
+
+<ul>
+<li>probit回归：回到一般线性模型即 $p(t=1|a)=f(a)$ ，其中 $a=\pmb w^T\pmb\phi$ ， $f(\cdot)$ 为激活函数。设置激活函数为：$f(a)=\left\{\begin{matrix}1&amp;a\ge\theta\\0&amp;a&lt;\theta\end{matrix}\right.$ ，假设参数 $\theta$ 从概率密度 $p(\theta)$ 中抽取则 $f(a)$ 为 $a&gt;\theta$ 的概率即
+$$
+f(a)=\int_{-\infty}^ap(\theta)d\theta
+$$
+进一步假设 $p(\theta)=\mathcal N(0,1)$ ，则对应的累积分布函数为 $\Phi(a)=\int_{-\infty}^a\mathcal N(\theta|0,1)d\theta$ ，形状与sigmoid函数类似。这个分布又被成为逆probit函数，也可以写成
+$$
+\Phi(a)=\frac{1}{2}\{1+erf(\frac{a}{\sqrt2})\}
+$$
+其中， $erf(a)=\frac{2}{\sqrt\pi}\int_0^aexp(-\theta^2)d\theta$ ，基于probit激活函数的一般线性模型被称作probit回归</li>
+</ul>
+
+<blockquote>
+<p>probit比sigmoid对离群点更加敏感</p>
+</blockquote>
+
+<ul>
+<li>标准链接函数：对目标变量的条件分布做更一般的来自指数族分布的假设，同样可以得到同前面一样的结论，误差函数的梯度为
+$$
+\nabla E(\pmb w)=\frac{1}{s}\sum_{n=1}^N\{y_n-t_n\}\pmb\phi_n
+$$
+对于高斯分布，$s=\beta^{-1}$ ，而对logistic模型， $s=1$</li>
+</ul></li>
+
+<li><p>拉普拉斯近似</p>
+
+<ul>
+<li>拉普拉斯近似利用泰勒展开的技术用一个高斯近似未知的概率分布的形式。设原分布的定义为
+$$
+p(z)=\frac{1}{Z}f(z)
+$$
+其中  $Z=\int f(z)dz$ 是归一化系数，一般假设未知。拉普拉斯方法寻找一个高斯近似 $q(z)$ ，其中心位于 $p(z)$ 众数的位置。首先，找 $p(z)$ 的众数，则有众数点 $z_0$ 处 $p&rsquo;(z_0)=0$ 也即 $f&rsquo;(z_0)=0$ 。因为高斯分布的对数是变量的二次函数，考虑 $\ln f(z)$ 以众数点 $z_0$ 为中心的泰勒展开
+$$
+\ln f(z)\simeq \ln f(z_0)-\frac{1}{2}A(z-z_0)^2
+$$
+其中 $A=\left.-\frac{d^2}{dz^2}\ln f(z)\right|_{z=z_0}$ ，两边取对数并对照高斯分布的概率形式进行归一化可得 $p(z)$ 的拉普拉斯近似
+$$
+q(z)=(\frac{A}{2\pi})^{\frac{1}{2}}exp\{-\frac{A}{2}(z-z_0)^2\}
+$$
+将拉普拉斯方法对M维空间 $\pmb z$ 上的概率分布 $p(\pmb z)=\frac{f(\pmb z)}{Z}$ 推广，如前面所述进行 $\pmb z_0$ 点的泰勒展开可得
+$$
+\ln f(\pmb z)\simeq\ln f(\pmb z_0)-\frac{1}{2}(\pmb{z-z}_0)^T\pmb A(\pmb{z-z}_0)
+$$
+其中 $M\times M$ 的Hessian矩阵 $\pmb A=-\nabla\nabla\ln f(\pmb z)|_{\pmb{z=z}_0}$ ，同样两边取对数并对照多元高斯分布的概率形式进行归一化可得
+$$
+q(\pmb z)=\frac{|\pmb A|^\frac{1}{2}}{(2\pi)^{\frac{M}{2}}}exp\{-\frac{1}{2}(\pmb{z-z}_0)^T\pmb A(\pmb{z-z}_0)\}=\mathcal N(\pmb{z|z}_0,\pmb A^{-1})
+$$</li>
+</ul>
+
+<blockquote>
+<p>高斯分布有良好定义的前提是 $A&gt;0$ 或 $\pmb A$ 正定，这保证了驻点一定是一个局部最大值。</p>
+
+<p>由中心极限定理，数据点相对较多时拉普拉斯近似会更有用，但其最大局限性是无法描述全局属性</p>
+</blockquote>
+
+<ul>
+<li>模型比较与BIC：对归一化常数 $Z$ 也可以得出近似
+$$
+Z=\int f(\pmb z)d\pmb z\simeq f(\pmb z_0)\int exp\{-\frac{1}{2}(\pmb{z-z}_0)^T\pmb A(\pmb{z-z}_0)\}d\pmb z=f(z_0)\frac{(2\pi)^\frac{M}{2}}{|\pmb A|^\frac{1}{2}}
+$$
+对模型证据 $p(\mathcal{D|M_i})=\int p(\mathcal{D|M_i},\pmb\theta_i)p(\pmb\theta_i|\mathcal M_i)d\pmb\theta$ ，省略对 $\mathcal M_i$ 的依赖后令 $f(\pmb\theta)=p(\mathcal D|\pmb\theta)p(\pmb\theta),Z=p(\mathcal D)$ ，则根据前面的式子可得
+$$
+\ln p(\mathcal D)\simeq ln(\mathcal D|\pmb\theta_{MAP})+\underbrace{\ln p(\pmb\theta_{MAP})+\frac{M}{2}\ln(2\pi)-\frac{1}{2}\ln|\pmb A|}_{Occam\ factor}
+$$
+其中Hessian矩阵 $\pmb A=-\nabla\nabla\ln p(\mathcal D|\pmb\theta_{MAP})p(\pmb\theta_{MAP})=-\nabla\nabla\ln p(\pmb\theta_{MAP}|\mathcal D)$ ，Occam因子负责对模型的复杂度进行惩罚。假设参数的高斯先验分布较宽、Hessian矩阵满秩，则上式可近似为
+$$
+\ln p(\mathcal D)\simeq\ln p(\mathcal D|\pmb\theta_{MAP})-\frac{1}{2}M\ln N
+$$
+N为数据点总数，M为 $\pmb \theta$ 中参数数量。这被称为贝叶斯信息准则（BIC）</li>
+</ul></li>
+
+<li><p>贝叶斯logistic回归</p>
+
+<ul>
+<li><p>拉普拉斯近似：考虑参数满足高斯先验 $p(\pmb w)=\mathcal N(\pmb{w|m}_0,\pmb S_0)$ ，$\pmb w$ 的后验概率分布为 $p(\pmb{w|t})\propto p(\pmb w)p(\pmb{t|w})$ ，上面分析logistic回归时，我们有似然函数
+$$
+p(\pmb{t|w})=\prod_{n=1}^Ny_n^{t_n}(1-y_n)^{1-t_n}
+$$
+则后验概率为
+$$
+\ln p(\pmb{w|t})=-\frac{1}{2}(\pmb{w-m}_0)^T\pmb S_0^{-1}(\pmb{w-m}_0)\\+\sum_{n=1}^N\{t_n\ln y_n+(1-t_n)\ln(1-y_n)\}+const
+$$
+其中 $y_n=\sigma(\pmb w^T\pmb\phi_n)$ ，下面用拉普拉斯近似求解。用求导方式得到最大化后验的参数 $\pmb w_{MAP}$ ，即高斯分布的均值，而协方差矩阵即Hessian矩阵的逆矩阵
+$$
+\pmb S_N^{-1}=-\nabla\nabla\ln p(\pmb{w|t})=\pmb S_0^{-1}+\sum_{n=1}^Ny_n(1-y_n)\pmb\phi_n\pmb\phi_n^T
+$$
+所以近似后的后验概率分布为
+$$
+q(\pmb w)=\mathcal N(\pmb{w|w}_{MAP},\pmb S_N)
+$$</p></li>
+
+<li><p>预测分布：给定一个新的特征向量 $\pmb{\phi(x)}$ ，类别 $C_1$ 的预测分布可通过对后验概率 $p(\pmb{w|t})$ 积分，而后验概率由高斯分布 $q(\pmb w)$ 近似，即
+$$
+p(C_1|\pmb{\phi,t})=\int p(C_1|\pmb{\phi,w})p(\pmb{w|t})d\pmb w\simeq\int\sigma(\pmb w^T\pmb\phi)q(\pmb w)d\pmb w
+$$
+记 $a=\pmb w^T\pmb\phi$ ，有 $\sigma(\pmb w^T\pmb\phi)=\int\delta(a-\pmb w^T\pmb\phi)\sigma(a)da$ ， $\delta(\cdot)$ 为迪拉克Delta函数，因此有
+$$
+\int\sigma(\pmb w^T\pmb\phi)q(\pmb w)d\pmb w=\iint\delta(a-\pmb w^T\pmb\phi)\sigma(a)q(\pmb w)d\pmb wda\\=\int\sigma(a)\int\delta(a-\pmb w^T\pmb\phi)q(\pmb w)d\pmb wda=\int\sigma(a)p(a)da
+$$
+其中 $p(a)=\int\delta(a-\pmb w^T\pmb\phi)q(\pmb w)d\pmb w$ ，而 $\delta(a-\pmb w^T\pmb\phi)$ 可以近似为高斯分布$\mathcal N(\pmb w^T\pmb\phi,\alpha\pmb I)$ （ $\alpha$ 趋向无穷大），可以由此计算出 $p(a)$ 满足高斯分布且参数为 $\mu_a=\pmb w_{MAP}^T\pmb\phi$ ， $\sigma_a^2=\pmb\phi^T\pmb S_N\pmb\phi+\alpha\pmb I=\pmb\phi^T\pmb S_N\pmb\phi$ ， 由此可得预测分布
+$$
+p(C_1|\pmb t)=\int\sigma(a)p(a)da=\int\sigma(a)\mathcal N(a|\mu_a,\sigma_a^2)da
+$$
+该积分不方便求解，使用前面提到的逆probit函数对sigmoid函数近似，有 $\sigma(a)\simeq\Phi(\lambda a)$ ，这里 $\lambda^2=\frac{\pi}{8}$ ，由此，上式可以得到求解
+$$
+p(C_1|\pmb t)=\int\sigma(a)\mathcal N(a|\mu_a,\sigma_a^2)da\simeq\sigma(\kappa(\sigma_a^2)\mu_a)
+$$
+其中 $\kappa(\sigma^2)=(1+\frac{\pi\sigma^2}{8})^{-\frac{1}{2}}$ ，这便是贝叶斯logistic回归的预测分布</p></li>
+</ul></li>
+</ol>
+
+                        </div>
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="/tags/machine-learning">machine learning</a></li>
+                                
+                                <li><a href="/tags/prml">PRML</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        
+<form id="search" method="POST" action="https://duckduckgo.com/">
+      
+      <input type="text" name="q" maxlength="255" placeholder="搜索...">
+      
+      <input type="hidden" name="sites" value="https://yybeta.github.io/">
+      
+      <input type="hidden" name="kp" value="-2">
+      
+      <input type="hidden" name="kh" value="1">
+      
+      <input type="hidden" name="kl" value="wt-wt">
+      
+      <input type="hidden" name="kg" value="p">
+      
+      <input type="hidden" name="kaf" value="1">
+      
+      
+      <input type="hidden" name="k1" value="-1">
+
+      
+
+      
+      
+      <input type="hidden" name="k7" value="#ffffff">
+      
+      <input type="hidden" name="kj" value="#ffffff">
+      
+      <input type="hidden" name="ky" value="#eaeaea">
+      
+      <input type="hidden" name="kx" value="#6E7173">
+      
+      <input type="hidden" name="k8" value="#444">
+      
+      <input type="hidden" name="k9" value="#6E7173">
+      
+      <input type="hidden" name="kaa" value="#6E7173">
+      
+      <input type="hidden" name="kae" value="#6E7173">
+
+      
+      <input type="hidden" name="ko" value="1">
+      
+      <input type="hidden" name="kt" value="n">
+      
+      <input type="hidden" name="ka" value="g">
+      
+      <input type="hidden" name="ks" value="l">
+      
+      <input type="hidden" name="kv" value="1">
+
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+        <ul class="widget-list">
+            
+            <li>
+                <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%85">代码宅</a>
+            </li>
+            
+            <li>
+                <a href="/categories/%E6%AC%A1%E5%85%83%E7%88%B1">次元爱</a>
+            </li>
+            
+            <li>
+                <a href="/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5">碎碎念</a>
+            </li>
+            
+        </ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2018 <a rel="nofollow" href="https://yybeta.github.io/">Space X</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io">Hugo</a>.
+        <a rel="nofollow noreferer noopener" href="https://github.com/JokerQyou/maupassant-hugo">Theme</a> based on <a rel="nofollow noreferer noopener" href="https://github.com/JokerQyou/maupassant-hugo">maupassant</a>.
+    </div>
+</footer>
+
+
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+<script type="text/javascript" src="/js/prism.js" async="true"></script>
+
+
+</body>
+</html>

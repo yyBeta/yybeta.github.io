@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.40.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>PRML读书笔记：1.Introduction - Space X</title>
+    <meta property="og:title" content="PRML读书笔记：1.Introduction - Space X">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-05-12T21:52:19&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-05-12T21:52:19&#43;08:00">
+        
+    <meta name="description" content="PRML读书笔记：1.Introduction">
+        <meta name="author" content="yyBeta">
+        
+    <meta property="og:url" content="https://yybeta.github.io/post/prml1introduction/">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+    <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://yybeta.github.io/">
+                        Space X
+                    </a>
+                
+                <p class="description">A geek, studying Data Mining and Machine Learning</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://yybeta.github.io/">博客</a>
+                    
+                    <a  href="https://yybeta.github.io/about/" title="关于">
+                        关于
+                    </a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">PRML读书笔记：1.Introduction</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年5月12日
+                            21:52
+                        </date>
+                        
+                        <div class="post-meta meta-category">
+                            ，归类于
+                            
+                                <a href="/categories/%E6%AC%A1%E5%85%83%E7%88%B1">次元爱</a>
+                            
+                        </div>
+                        
+                        <div class="post-content">
+                            
+
+<h4 id="一-introduction">一. Introduction</h4>
+
+<ol>
+<li><p>概率论</p>
+
+<ul>
+<li><p>由贝叶斯公式 $p(\pmb w|\mathcal D)=\frac{p(\mathcal D|\pmb w)p(\pmb w)}{p(\mathcal D)}$ 得到<code>贝叶斯定理</code>：“<strong>后验概率正比于先验概率与似然函数的乘积</strong>”</p></li>
+
+<li><p>假设观测值 $\pmb t$ 服从高斯分布 $N(y(\pmb{x,w}), \frac{1}{\beta})$ ，则最大化似然函数
+$$
+\ln p(\pmb{t|x,w},\beta)=-\frac{\beta}{2}\sum_{n=1}^N{y(\pmb x_n,\pmb w)-t_n}^2+\frac{N}{2}\ln\beta-\frac{N}{2}\ln(2\pi)
+$$
+等价于最小化平方和误差 $\frac{1}{2}\sum_{n=1}^N{y(\pmb x_n,\pmb w)-t_n}^2$</p></li>
+
+<li><p>假设 $\pmb{w}$ 先验分布为 $N(\pmb 0,\alpha^{-1}\pmb I)$ ，则最大化先验概率
+$$
+\ln p(\pmb w|\alpha)=\frac{M+1}{2}\ln\frac{\alpha}{2\pi}-\frac{\alpha}{2}\pmb w^T\pmb w
+$$
+等价于最小化 $\pmb w^T\pmb w$</p></li>
+
+<li><p>由贝叶斯定理 $p(\pmb{w|x,t},\alpha,\beta)\propto p(\pmb{t|x,w},\beta)p(\pmb w|\alpha)$ ，寻找最可能的 $\pmb w$ 值即最大化左边即最小化右边的负对数，结合前面所述，最大化后验概率即最小化下式：
+$$
+\frac{\beta}{2}\sum_{n=1}^N{y(\pmb{x_n,w})-t_n}^2+\frac{\alpha}{2}\pmb w^T\pmb w
+$$</p></li>
+</ul>
+
+<blockquote>
+<p>由此，最大化后验概率等价于最小化正则化的平方和误差函数（ $\lambda=\frac{\alpha}{\beta}$ ）。</p>
+</blockquote>
+
+<ul>
+<li>预测概率可以写成下面的形式：
+$$
+p(t|x,\pmb{x,t})=\int p(t|x,\pmb w)p(\pmb{w|x,t})d\pmb w
+$$</li>
+</ul>
+
+<blockquote>
+<p>证明（也可用概率图证）：
+$$
+p(t|x,\pmb{x,t})=\int p(\pmb w,t|x,\pmb{x,t})d\pmb w\\=\int p(t|x,\pmb{w,x,t})p(\pmb w|x,\pmb{x,t})=\int p(t|x,\pmb w)p(\pmb{w|x,t})d\pmb w
+$$</p>
+</blockquote></li>
+
+<li><p>模型选择</p>
+
+<ul>
+<li>除了交叉验证等常规方法，还有直接使用一些信息准则的方式，如AIC即选择使 $\ln p(\mathcal D|\pmb w_{ML})-M$ （M为模型中可调节参数的数量）最大的模型，第四章会提到它的变体BIC</li>
+</ul></li>
+
+<li><p>维度灾难</p>
+
+<ul>
+<li><p>模型的复杂度问题，会导致函数空间过大</p></li>
+
+<li><p>高维几何体的各种性质会突变，不能用低维的直觉去思考，如在高维空间中，一个球体的大部分体积都聚集在表面附近的薄球壳上</p></li>
+</ul></li>
+
+<li><p>决策论</p>
+
+<ul>
+<li><p>最小化期望损失即对新的 $\pmb x$ 将其分到使式 $\sum_kL_{kj}p(C_k|\pmb x)$ 取最小值的第 $j$ 类</p></li>
+
+<li><p>拒绝选项：对于后验概率的最大值 $p(C_k|\pmb x)$ 小于等于一个阈值 $\theta$ 的输入，避免做出决策是更正确的选择（可以用留给专家等方式处理）</p></li>
+
+<li><p>生成式模型：直接对 $p(\pmb x,C_k)$ 建模，然后归一化得到后验概率 $p(C_k|\pmb x)$ ，显式或隐式地对输入或输出进行建模（通过取样可以用来人工生成输入空间的数据点）</p></li>
+
+<li><p>判别式模型：先直接对后验概率 $p(C_k|\pmb x)$ 建模，解决这一推断问题，再使用决策论对新输入$\pmb x$进行分类</p></li>
+
+<li><p>更简单的模型：找到函数$f(\pmb x)$直接将输入$\pmb x$映射为类别标签（此情况下概率不起作用）</p></li>
+</ul></li>
+
+<li><p>信息论</p>
+
+<ul>
+<li><p>熵描述随机变量的不确定性，值等于按其可能值的概率进行霍夫曼编码后的编码期望长度的$\frac{1}{\ln2}$倍（使用的对数底数由 $2$ 变成了 $e$ ）</p></li>
+
+<li><p>离散变量在满足均匀分布时的熵最大，<strong>连续变量在满足高斯分布时熵最大</strong>，且都随分布宽度增加而增加</p></li>
+
+<li><p>相对熵也即<code>KL散度</code>描述两个分布的差异度，即用一个分布描述另一分布的信息时为了使其更具体所需要的平均附加信息量，因此由下式定义：
+$$
+KL(p||q)=-\int p(x)\ln q(x)dx-(-\int p(x)\ln p(x)dx)\\=-\int p(x)\ln{\frac{q(x)}{p(x)}}dx
+$$</p></li>
+</ul>
+
+<blockquote>
+<p>$KL(p||q)\ne KL(q||p), KL(p||q)\ge0$</p>
+</blockquote>
+
+<ul>
+<li>互信息（$x,y$间的互信息描述$x$和$y$是否“接近”于相互独立）：
+$$
+I[x,y]=KL(p(x,y)||p(x)p(y))=-\iint p(x,y)\ln(\frac{p(x)p(y)}{p(x,y)})dxdy
+$$</li>
+</ul>
+
+<blockquote>
+<p>$I[x,y]=H[x]-H[x|y]=H[y]-H[y|x]$</p>
+</blockquote></li>
+</ol>
+
+                        </div>
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="/tags/machine-learning">machine learning</a></li>
+                                
+                                <li><a href="/tags/prml">PRML</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        
+<form id="search" method="POST" action="https://duckduckgo.com/">
+      
+      <input type="text" name="q" maxlength="255" placeholder="搜索...">
+      
+      <input type="hidden" name="sites" value="https://yybeta.github.io/">
+      
+      <input type="hidden" name="kp" value="-2">
+      
+      <input type="hidden" name="kh" value="1">
+      
+      <input type="hidden" name="kl" value="wt-wt">
+      
+      <input type="hidden" name="kg" value="p">
+      
+      <input type="hidden" name="kaf" value="1">
+      
+      
+      <input type="hidden" name="k1" value="-1">
+
+      
+
+      
+      
+      <input type="hidden" name="k7" value="#ffffff">
+      
+      <input type="hidden" name="kj" value="#ffffff">
+      
+      <input type="hidden" name="ky" value="#eaeaea">
+      
+      <input type="hidden" name="kx" value="#6E7173">
+      
+      <input type="hidden" name="k8" value="#444">
+      
+      <input type="hidden" name="k9" value="#6E7173">
+      
+      <input type="hidden" name="kaa" value="#6E7173">
+      
+      <input type="hidden" name="kae" value="#6E7173">
+
+      
+      <input type="hidden" name="ko" value="1">
+      
+      <input type="hidden" name="kt" value="n">
+      
+      <input type="hidden" name="ka" value="g">
+      
+      <input type="hidden" name="ks" value="l">
+      
+      <input type="hidden" name="kv" value="1">
+
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+        <ul class="widget-list">
+            
+            <li>
+                <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%85">代码宅</a>
+            </li>
+            
+            <li>
+                <a href="/categories/%E6%AC%A1%E5%85%83%E7%88%B1">次元爱</a>
+            </li>
+            
+            <li>
+                <a href="/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5">碎碎念</a>
+            </li>
+            
+        </ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2018 <a rel="nofollow" href="https://yybeta.github.io/">Space X</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io">Hugo</a>.
+        <a rel="nofollow noreferer noopener" href="https://github.com/JokerQyou/maupassant-hugo">Theme</a> based on <a rel="nofollow noreferer noopener" href="https://github.com/JokerQyou/maupassant-hugo">maupassant</a>.
+    </div>
+</footer>
+
+
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+<script type="text/javascript" src="/js/prism.js" async="true"></script>
+
+
+</body>
+</html>

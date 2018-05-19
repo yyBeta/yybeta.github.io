@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.40.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>PRML读书笔记：3.Linear Models for Regression - Space X</title>
+    <meta property="og:title" content="PRML读书笔记：3.Linear Models for Regression - Space X">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2017-05-30T22:00:19&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2017-05-30T22:00:19&#43;08:00">
+        
+    <meta name="description" content="PRML读书笔记：3.Linear Models for Regression">
+        <meta name="author" content="yyBeta">
+        
+    <meta property="og:url" content="https://yybeta.github.io/post/prml3linear-models-for-regression/">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+    <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://yybeta.github.io/">
+                        Space X
+                    </a>
+                
+                <p class="description">A geek, studying Data Mining and Machine Learning</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://yybeta.github.io/">博客</a>
+                    
+                    <a  href="https://yybeta.github.io/about/" title="关于">
+                        关于
+                    </a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">PRML读书笔记：3.Linear Models for Regression</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2017年5月30日
+                            22:00
+                        </date>
+                        
+                        <div class="post-meta meta-category">
+                            ，归类于
+                            
+                                <a href="/categories/%E6%AC%A1%E5%85%83%E7%88%B1">次元爱</a>
+                            
+                        </div>
+                        
+                        <div class="post-content">
+                            
+
+<h4 id="三-linear-models-for-regression">三. Linear Models for Regression</h4>
+
+<ol>
+<li><p>线性基函数模型</p>
+
+<ul>
+<li><p>将线性模型的输入变量的固定的非线性函数进行线性组合可以扩展模型，即 $y(\pmb{x,w})=\sum_{j=0}^{M-1}w_j\phi_j(\pmb x)=\pmb w^T\pmb{\phi(x)}$ ，其中的 $\phi(\pmb x)$ 被称为基函数，相当于把 $\pmb x$ 映射到一个 $M$ 维空间里，每一维 $\phi_j(\pmb x)$ 都是由原来的 $\pmb x$ 非线性变换得到的（固定$\phi_0(\pmb x)=1$），常见的基函数有“高斯”基函数：
+$$
+\phi_j(x)=exp{-\frac{(x-\mu_j)^2}{2s^2}}
+$$
+sigmoid基函数：
+$$
+\phi_j(x)=\sigma(\frac{x-\mu_j}{s})
+$$
+其中 $\sigma(a)$ 可取sigmoid或tanh函数</p></li>
+
+<li><p>最大似然与最小平方：同第一章中可得到
+$$
+\pmb w_{ML}=(\pmb\Phi^T\pmb\Phi)^{-1}\pmb\Phi^T\pmb t
+$$
+所以最小二乘的解就是广义逆矩阵乘以输出值，在所假设的目标变量 $t=y(\pmb{x,w})+ \mathcal N(\pmb 0,\beta^{-1})$  上附加的高斯噪声的精度也可以得到最大似然求解
+$$
+\frac{1}{\beta_{ML}}=\frac{1}{N}\sum_{n=1}^N{t_n-\pmb w_{ML}^T\phi(\pmb x_n)}
+$$</p></li>
+
+<li><p>最小平方的几何描述：$N$个数据的训练集对应到一个 $N$ 维空间，则标签向量 $\pmb t=(t_1,&hellip;,t_N)^T$ ，对 $M$ 维空间里的每一维也都可以构成该坐标系里一个 $N$ 个数据的向量 $(\phi_j(\pmb x_1),&hellip;,\phi_j(\pmb x_N))^T$ ，则当 $M&lt;N$ 时以这 $M$ 个向量为坐标轴，可视为原 $N$ 维子空间里的一个子空间。因为模型的 $N$ 维输出向量 $\pmb y$ 由这 $M$ 个向量线性组合而成，所以它只能对应到这个子空间里的一个向量 $\pmb w$ 。平方和误差函数即 $\pmb{y,t}$ 向量的欧式距离，欲使该距离最小， $\pmb y$ 向量必然是 $\pmb t$ 在 $M$ 维子空间坐标系上的投影，对应的解 $\pmb w$ 即投影坐标</p></li>
+
+<li><p>正则化最小平方：带L2正则项的误差函数同样有闭式解：
+$$
+\pmb w=(\lambda\pmb I+\pmb\Phi^T\pmb\Phi)^{-1}\pmb\Phi^T\pmb t
+$$
+对于添加正则项的损失函数有更一般的形式
+$$
+\frac{1}{2}\sum_{n=1}^N{t_n- \pmb w^T\pmb{\phi(x}_n)}^2+\frac{\lambda}{2}\sum_{j=1}^M|w_j|^q
+$$
+$q=1$ 时被称为 lasso ，当 $\lambda$ 足够大时易产生稀疏解</p></li>
+
+<li><p>多个输出：同时预测 $K​$ 个目标变量时可以对目标向量的所有分量使用一组相同基函数建模，即 $\pmb y_{K*1}=(\pmb W_{M*K})^T\pmb\phi_{M*1}(\pmb x)​$ ，同样设 $p(\pmb{t|x,W},\beta)=\mathcal N(\pmb W^T\pmb{\phi(x)}|\beta^{-1}\pmb I)​$ ，则最大化其对数似然 $\ln(\pmb{T|X,W},\beta)​$ 可得
+$$
+\pmb W_{ML}=(\pmb\Phi^T\pmb\Phi)^{-1}\pmb\Phi^T\pmb T
+$$
+分解到每个目标变量 $t_k$ 则有 $\pmb w_k=(\pmb\Phi^T\pmb\Phi)^{-1}\pmb\Phi^T\pmb t_k=\pmb\Phi^\dagger\pmb t_k$ 。即计算一个伪逆矩阵便能将不同目标变量分开处理</p></li>
+</ul></li>
+
+<li><p>偏差-方差分解</p>
+
+<ul>
+<li>假设用平方损失函数求解回归问题，则最优的预测结果便是：$h(x)=\mathbb E[t|\pmb x]=\int tp(t|\pmb x)dt$ ，那么由 $y(\pmb{x,w})$ 建模后的平方损失函数的期望是
+$$
+\mathbb E[L]=\int{y(\pmb x)-h(\pmb x)}^2p(\pmb x)d\pmb x+\iint{h(\pmb x)-t}^2p(\pmb x,t)d\pmb xdt
+$$
+第二项是与我们的建模 $y(\pmb x)$ 无关的数据本身的噪声造成的，而为了最小化损失期望，我们只能最小化第一项。而给定数据集 $\mathcal D$ ，第一项可以分解为
+$$
+\mathbb E_{\mathcal D}[{y(\pmb x;\mathcal D)-h(\pmb x)}^2]=\underbrace{{ \mathbb E_{\mathcal D}[y(x;\mathcal D)]-h(\pmb x)}^2}_{bias^2}+\underbrace{\mathbb E_{\mathcal D}[{ y(\pmb x;\mathcal D)-\mathbb E_{\mathcal D}[y(\pmb x;\mathcal D)]}^2]}_{variance}
+$$
+平方偏差度量不同数据集下的预测与最优的预期回归函数间的平均差异即对给定数据集的拟合程度，而方差度量不同数据集训练出的预测结果的波动情况即对于数据集选择的敏感程度，综上有 <strong>损失期望=偏差$^2$+方差+噪声</strong></li>
+</ul></li>
+
+<li><p>贝叶斯线性回归</p>
+
+<ul>
+<li>参数分布：因为似然函数
+$$
+p(\pmb{t|X,w},\beta)=\prod_{n=1}^N\mathcal N(t_n|\pmb w^T\pmb{\phi(x_n)},\beta^{-1})=\mathcal N(\pmb{t|\Phi w},\beta^{-1}\pmb I)
+$$
+则设其共轭先验是高斯分布 $p(\pmb w)=\mathcal N(\pmb{w|m}_0,\pmb S_0)$ ，那么由<strong>【二.3】</strong>中所推高斯变量的贝叶斯定理，可得后验概率
+$$
+p(\pmb{w|t})=\mathcal N(\pmb{w|m}_N,\pmb S_N)
+$$
+其中 $\pmb m_N=\pmb S_N(\pmb S_0^{-1}\pmb m_0+\beta\pmb\Phi^T\pmb t),\pmb S_N^{-1}=\pmb S_0^{-1}+\beta\pmb\Phi^T\pmb\Phi​$ 。同第一章假设高斯先验为 $p(\pmb w|\alpha)=\mathcal N(\pmb{w|0},\alpha^{-1}\pmb I)​$ ，此时对应的后验参数 $\pmb m_N=\beta\pmb S_N\pmb\Phi^T\pmb t,\pmb S_N^{-1}=\alpha\pmb I+\beta\pmb\Phi^T\pmb\Phi​$ 。带入后验概率公式，则对其最大化即最小化下式：
+$$
+-\ln p(\pmb{w|t})=\frac{\beta}{2}\sum_{n=1}^N{t_n-\pmb w^T\pmb{\phi(x_n)}}^2+\frac{\alpha}{2}\pmb w^T\pmb w+const
+$$</li>
+</ul>
+
+<blockquote>
+<p>同【一.1】中过程类似，证明了后验分布关于 $\pmb w$ 的最大化等价于对加二次正则项的平方和误差函数进行最小化（ $\lambda=\frac{\alpha}{\beta}$ ）</p>
+</blockquote>
+
+<p>同【二.1】中所述，可以在顺序学习中不停地将后验变为下一次或者下一批学习过程中的先验，与新数据的似然相乘作为新的后验以此类推</p>
+
+<ul>
+<li><p>预测分布：同【一.1】所述预测概率可以写成 $p(t|\pmb t,\alpha,\beta)=\int p(t|\pmb w,\beta)p(\pmb{w|t},\alpha,\beta)d\pmb w​$ 的形式（省略了新输入 $\pmb x​$ 和训练集 $\pmb X​$ ），如果考虑
+$$
+p(t|\pmb{x,w},\beta)=\mathcal N(t|y(\pmb{x,w}),\beta^{-1}),p(\pmb{w|t})=\mathcal N(\pmb{w|m}_N,\pmb S_N)
+$$
+则有
+$$
+p(t|\pmb{x,t},\alpha,\beta)=\mathcal N(t|\pmb m_N^T\pmb\phi(\pmb x),\sigma_N^2(\pmb x))
+$$
+其中 $\sigma^2_N(\pmb x)=\frac{1}{\beta}+\pmb\phi(\pmb x)^T\pmb S_N\pmb\phi(\pmb x)$</p></li>
+
+<li><p>等价核：把 $\pmb w$ 在 $\mathcal N(\pmb{w|0},\alpha^{-1}\pmb I)$ 的先验假设下的后验均值 $\pmb m_N=\beta\pmb S_N\pmb\Phi^T\pmb t$ 代入 $y(\pmb{x,w})=\pmb w^T\pmb\phi(\pmb x)$ 可得：
+$$
+y(\pmb{x,m}_N)=\pmb m_N^T\pmb\phi(\pmb x)=\sum_{n=1}^N\beta\pmb\phi(\pmb x)^T\pmb S_N\pmb\Phi^T\pmb t\\=\sum_{n=1}^N\beta\pmb\phi(\pmb x)^T\pmb S_N\pmb\phi(\pmb x_n)t_n=\sum_{n=1}^Nk(\pmb x,\pmb x_n)t_n
+$$
+函数 $k(\pmb x,\pmb x&rsquo;)$ 被称为平滑矩阵或等价核。由于 $cov[y(\pmb x),y(\pmb x)&lsquo;]=cov[\pmb\phi(\pmb x)^T\pmb w,\pmb w^T\pmb{\phi(x}&lsquo;)]=\beta^{-1}k(\pmb{x,x}&lsquo;)$ ，并根据等价核的形式可以得到该预测均值的相关性同点对的距离有关</p></li>
+</ul>
+
+<blockquote>
+<p>又等价核有性质 $\sum_{m=1}^Nk(\pmb x,\pmb x_n)=1$ ，则可以看作预测值是对数据集里目标值的一种加权平均，而其权重等于定义的核函数即对新输入与训练输入的一种距离度量方式</p>
+</blockquote></li>
+
+<li><p>贝叶斯模型比较</p>
+
+<ul>
+<li>假设需要用数据 $\mathcal D$ 比较模型 $\mathcal M_i,i=1,&hellip;,L$ ，则我们需要计算模型的后验概率分布 $p(\mathcal{M_i|D})\propto p(\mathcal M_i)p(\mathcal{D|M_i})$ ，然后得到关于新数据 $\pmb x$ 的目标预测分布：
+$$
+p(t|\pmb x,\mathcal D)=\sum_{i=1}^Lp(t|\pmb x,\mathcal{M_i,D})p(\mathcal{M_i|D})
+$$
+更简单的近似方法是模型选择，即直接选择使得模型后验 $p(\mathcal{D|M_i})$ 最大的模型，而在模型先验 $p(\mathcal M_i)$ 均匀的假设下即选择使模型证据 $p(\mathcal{D|M_i})$ 最大的模型，模型证据可以通过 $p(\mathcal{D|M_i})=\int p(\mathcal D|\pmb w,\mathcal M_i)p(\pmb w|\mathcal M_i)d\pmb w$ 得到</li>
+</ul></li>
+</ol>
+
+<blockquote>
+<p>可以证明最大模型证据的方法倾向于选择复杂度适中的模型，简单的模型不能很好拟合数据，而复杂的模型把它的预测概率散布于过多可能的数据集当中，从而对它们中每一个赋予的概率都相对较小</p>
+</blockquote>
+
+<ol>
+<li><p>证据近似</p>
+
+<ul>
+<li>如果引入 $\alpha,\beta$ 上的超先验分布，那么预测分布可通过对 $\pmb w,\alpha,\beta$ 积分的方法得到：
+$$
+p(t|\pmb t)=\iiint p(t|\pmb w,\beta)p(\pmb{w|t},\alpha,\beta)p(\alpha,\beta|\pmb t)d\pmb wd\alpha d\beta
+$$
+设后验分布 $p(\alpha,\beta|\pmb t)$ 在$(\hat\alpha,\hat\beta)$ 附近有尖峰，上式可近似为：
+$$
+p(t|\pmb t)\simeq p(t|\pmb t,\hat\alpha,\hat\beta)=\int p(t|\pmb w,\hat\beta)p(\pmb{w|t},\hat\alpha,\hat\beta)d\pmb w
+$$</li>
+</ul>
+
+<p>由贝叶斯定理 $p(\alpha,\beta|\pmb t)\propto p(\pmb t|\alpha,\beta)p(\alpha,\beta)$ ，假设先验分布比较平均，则 $\hat\alpha,\hat\beta$ 可以通过最大化似然函数 $p(\pmb t|\alpha,\beta)=\int p(\pmb{t|w},\beta)p(\pmb w|\alpha)d\pmb w$ 得到，代入【三.3】中一些结果并计算，可得对数似然：
+$$
+\ln p(\pmb t|\alpha,\beta)=\frac{M}{2}\ln\alpha+\frac{N}{2}\ln\beta-E(\pmb m_N)+\frac{1}{2}\ln|\pmb S_N|-\frac{N}{2}\ln(2\pi)
+$$
+其中 $E(\pmb m_N)=\frac{\beta}{2}||\pmb{t-\Phi m}_N||^2+\frac{\alpha}{2}\pmb m_N^T\pmb m_N$ ，分别关于 $\alpha,\beta$ 最大化上式模型证据得到隐式解，可通过迭代求解得到 $\hat\alpha,\hat\beta$</p></li>
+
+<li><p>固定基函数的局限性</p>
+
+<ul>
+<li><p>局限性：基函数难以估计；数据维度很大，基函数的数量会随着输入空间的维度 $D$ 迅速增长</p></li>
+
+<li><p>而真实数据的性质可能帮助缓解这种潜在的维度灾难：输入变量往往存在相关性；目标变量可能只依赖于数据流形中的少量可能的方向</p></li>
+</ul></li>
+</ol>
+
+                        </div>
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="/tags/machine-learning">machine learning</a></li>
+                                
+                                <li><a href="/tags/prml">PRML</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        
+<form id="search" method="POST" action="https://duckduckgo.com/">
+      
+      <input type="text" name="q" maxlength="255" placeholder="搜索...">
+      
+      <input type="hidden" name="sites" value="https://yybeta.github.io/">
+      
+      <input type="hidden" name="kp" value="-2">
+      
+      <input type="hidden" name="kh" value="1">
+      
+      <input type="hidden" name="kl" value="wt-wt">
+      
+      <input type="hidden" name="kg" value="p">
+      
+      <input type="hidden" name="kaf" value="1">
+      
+      
+      <input type="hidden" name="k1" value="-1">
+
+      
+
+      
+      
+      <input type="hidden" name="k7" value="#ffffff">
+      
+      <input type="hidden" name="kj" value="#ffffff">
+      
+      <input type="hidden" name="ky" value="#eaeaea">
+      
+      <input type="hidden" name="kx" value="#6E7173">
+      
+      <input type="hidden" name="k8" value="#444">
+      
+      <input type="hidden" name="k9" value="#6E7173">
+      
+      <input type="hidden" name="kaa" value="#6E7173">
+      
+      <input type="hidden" name="kae" value="#6E7173">
+
+      
+      <input type="hidden" name="ko" value="1">
+      
+      <input type="hidden" name="kt" value="n">
+      
+      <input type="hidden" name="ka" value="g">
+      
+      <input type="hidden" name="ks" value="l">
+      
+      <input type="hidden" name="kv" value="1">
+
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+        <ul class="widget-list">
+            
+            <li>
+                <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%85">代码宅</a>
+            </li>
+            
+            <li>
+                <a href="/categories/%E6%AC%A1%E5%85%83%E7%88%B1">次元爱</a>
+            </li>
+            
+            <li>
+                <a href="/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5">碎碎念</a>
+            </li>
+            
+        </ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2018 <a rel="nofollow" href="https://yybeta.github.io/">Space X</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io">Hugo</a>.
+        <a rel="nofollow noreferer noopener" href="https://github.com/JokerQyou/maupassant-hugo">Theme</a> based on <a rel="nofollow noreferer noopener" href="https://github.com/JokerQyou/maupassant-hugo">maupassant</a>.
+    </div>
+</footer>
+
+
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+<script type="text/javascript" src="/js/prism.js" async="true"></script>
+
+
+</body>
+</html>

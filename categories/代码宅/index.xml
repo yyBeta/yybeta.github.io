@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>代码宅 on Space X</title>
+    <link>https://yybeta.github.io/categories/%E4%BB%A3%E7%A0%81%E5%AE%85/</link>
+    <description>Recent content in 代码宅 on Space X</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 07 May 2018 17:28:02 +0800</lastBuildDate>
+    
+	<atom:link href="https://yybeta.github.io/categories/%E4%BB%A3%E7%A0%81%E5%AE%85/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Hadoop&amp;Spark安装手记</title>
+      <link>https://yybeta.github.io/post/hadoop-spark/</link>
+      <pubDate>Mon, 07 May 2018 17:28:02 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/post/hadoop-spark/</guid>
+      <description>一. 前置准备  配置oracle-jdk：  先去下载jdk，然后解压
+sudo tar -zxvf jdk-8u171-linux-x64.tar.gz -C /usr/local  然后sudo vim /etc/profile末尾加上以下几行修改环境变量
+export JAVA_HOME=/usr/local/jdk1.8.0_171 export JRE_HOME=$JAVA_HOME/jre export CLASSPATH=.:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar export PATH=$PATH:$JAVA_HOME/bin  source /etc/profile使之立即生效
+使用update-alternatives 命令维护系统的软连接
+sudo update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 2 sudo update-alternatives --install /usr/bin/javac javac $JAVA_HOME/bin/javac 2  使用update-alternatives 命令选择默认的java和javac命令目录
+sudo update-alternatives --config java sudo update-alternatives --config javac  两条都选择刚才配置好的两个目录即可
+ 安装ssh  sudo apt install openssh-server  利用 ssh-keygen 生成密钥，并将密钥加入到授权中，实现免密码登录
+ssh-keygen -t rsa cat ~/.</description>
+    </item>
+    
+    <item>
+      <title>Debian9安装手记</title>
+      <link>https://yybeta.github.io/post/debian-install/</link>
+      <pubDate>Tue, 27 Jun 2017 17:28:02 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/post/debian-install/</guid>
+      <description>Debian9 Stretch终于发布了，用了一圈还是决定回归debian怀抱，这里记录一下安装过程
+ 无线网卡驱动，配好non-free源后，在有线连接下，sudo apt install firmware-iwlwifi并重启，完成
+ 设置terminal快捷键，设置 &amp;gt;键盘&amp;gt;应用程序快捷键 添加xfce4-terminal 的快捷键 super+r, 添加thunar的快捷键为 super+e， 修改xflock4的快捷键为 super+L，再在设置&amp;gt;窗口管理器&amp;gt;键盘 将显示桌面设置为 super+d 设置面板的透明度为50%，并将面板的应用程序菜单替换为whisker菜单，将工作区设置为两个，terminal的透明度为75%
+ 安装sudo和vim
+su apt install sudo vim   然后vim /etc/sudoers在 root ALL=...行后面添加一行为
+ yy	ALL=(ALL:ALL) ALL   https://repo.debiancn.org/ 下载debian-keyring并安装sudo dpkg -i $DEBIAN-KEYRING  修改软件源 sudo vim /etc/apt/sources.list，在最前面添加
+ deb http://mirrors.ustc.edu.cn/debian stretch main non-free contrib deb http://mirrors.ustc.edu.cn/debian stretch-proposed-updates main non-free contrib deb-src http://mirrors.ustc.edu.cn/debian stretch main non-free contrib deb-src http://mirrors.ustc.edu.cn/debian stretch-proposed-updates main non-free contrib deb http://mirrors.</description>
+    </item>
+    
+  </channel>
+</rss>

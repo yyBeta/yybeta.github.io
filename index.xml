@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Space X</title>
+    <link>https://yybeta.github.io/</link>
+    <description>Recent content on Space X</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 07 May 2018 17:28:02 +0800</lastBuildDate>
+    
+	<atom:link href="https://yybeta.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Hadoop&amp;Spark安装手记</title>
+      <link>https://yybeta.github.io/post/hadoop-spark/</link>
+      <pubDate>Mon, 07 May 2018 17:28:02 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/post/hadoop-spark/</guid>
+      <description>一. 前置准备  配置oracle-jdk：  先去下载jdk，然后解压
+sudo tar -zxvf jdk-8u171-linux-x64.tar.gz -C /usr/local  然后sudo vim /etc/profile末尾加上以下几行修改环境变量
+export JAVA_HOME=/usr/local/jdk1.8.0_171 export JRE_HOME=$JAVA_HOME/jre export CLASSPATH=.:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar export PATH=$PATH:$JAVA_HOME/bin  source /etc/profile使之立即生效
+使用update-alternatives 命令维护系统的软连接
+sudo update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 2 sudo update-alternatives --install /usr/bin/javac javac $JAVA_HOME/bin/javac 2  使用update-alternatives 命令选择默认的java和javac命令目录
+sudo update-alternatives --config java sudo update-alternatives --config javac  两条都选择刚才配置好的两个目录即可
+ 安装ssh  sudo apt install openssh-server  利用 ssh-keygen 生成密钥，并将密钥加入到授权中，实现免密码登录
+ssh-keygen -t rsa cat ~/.</description>
+    </item>
+    
+    <item>
+      <title>Debian9安装手记</title>
+      <link>https://yybeta.github.io/post/debian-install/</link>
+      <pubDate>Tue, 27 Jun 2017 17:28:02 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/post/debian-install/</guid>
+      <description>Debian9 Stretch终于发布了，用了一圈还是决定回归debian怀抱，这里记录一下安装过程
+ 无线网卡驱动，配好non-free源后，在有线连接下，sudo apt install firmware-iwlwifi并重启，完成
+ 设置terminal快捷键，设置 &amp;gt;键盘&amp;gt;应用程序快捷键 添加xfce4-terminal 的快捷键 super+r, 添加thunar的快捷键为 super+e， 修改xflock4的快捷键为 super+L，再在设置&amp;gt;窗口管理器&amp;gt;键盘 将显示桌面设置为 super+d 设置面板的透明度为50%，并将面板的应用程序菜单替换为whisker菜单，将工作区设置为两个，terminal的透明度为75%
+ 安装sudo和vim
+su apt install sudo vim   然后vim /etc/sudoers在 root ALL=...行后面添加一行为
+ yy	ALL=(ALL:ALL) ALL   https://repo.debiancn.org/ 下载debian-keyring并安装sudo dpkg -i $DEBIAN-KEYRING  修改软件源 sudo vim /etc/apt/sources.list，在最前面添加
+ deb http://mirrors.ustc.edu.cn/debian stretch main non-free contrib deb http://mirrors.ustc.edu.cn/debian stretch-proposed-updates main non-free contrib deb-src http://mirrors.ustc.edu.cn/debian stretch main non-free contrib deb-src http://mirrors.ustc.edu.cn/debian stretch-proposed-updates main non-free contrib deb http://mirrors.</description>
+    </item>
+    
+    <item>
+      <title>PRML读书笔记：4.Linear Models for Classification</title>
+      <link>https://yybeta.github.io/post/prml4linear-models-for-classification/</link>
+      <pubDate>Fri, 09 Jun 2017 21:00:39 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/post/prml4linear-models-for-classification/</guid>
+      <description>四. Linear Models for Classification  判别函数
+ 二分类：线性判别函数的最简单形式是输入向量的线性函数 $y(\pmb x)=\pmb w^T\pmb x+w_0$ ，对应的决策边界由 $y(\pmb x)=0$ 确定，即 $D$ 维空间里的一个 $(D-1)$ 维超平面，由距离公式，点 $\pmb x$ 到决策边界超平面的距离为 $r=\frac{y(\pmb x)}{||\pmb w||}$
+ 多分类：对 $K$ 个类别进行分类，有常见的OVO训练 $\frac{K(K-1)}{2}$ 个决策边界进行分类和OVR训练 $K-1$ 个决策边界进行分类，但这两种都会出现不能得出分类的情况，所以有了训练$K$ 个决策边界并考虑置信度的不存在上述不能分类的模糊区域的方式
+   书中置信度取的是 $y_k(\pmb x)=\pmb w_k^T\pmb x+w_{k0}$ ，因此任两类 $j,k$ 的决策边界为 $y_j(\pmb x)=y_k(\pmb x)$ ，即 $(\pmb w_k-\pmb w_j)^T\pmb x+(w_{k0}-w_{j0})=0$ 。个人觉得置信度更宜取 $r_k=\frac{y_k(\pmb x)}{||\pmb w_k||}$
+  用于分类的最小平方法：将 $K$ 分类问题的目标向量 $\pmb t$ 直接用“1-of-K”二元表示方式，每个类别 $C_k$ 由自己的线性模型 $y_k(\pmb x)=\pmb w_k^T\pmb x+w_{k0}$ 描述，则令 $\tilde{\pmb w}_k=(w_{k0},\pmb w_k^T)^T,\tilde{\pmb x}=(1,\pmb x^T)^T$ ，则由 $\tilde{\pmb w}_k$ 作为第 $k$ 列拼成的矩阵 $\tilde{\pmb W}$ 得到 $K$ 分类的判别函数 $\pmb{y(x})=\tilde{\pmb W}^T\tilde{\pmb x}$ 。则若以 $\tilde{\pmb x}_n^T$ 作为第n行拼成矩阵 $\tilde{\pmb X}$ 则平方和误差函数为： $$ E_{D}(\tilde{\pmb W})=\frac{1}{2}Tr\{(\tilde{\pmb X}\tilde{\pmb W}-\pmb T)^T(\tilde{\pmb X}\tilde{\pmb W}-\pmb T)\} $$ 对其最小化可得闭式解 $$ \tilde{\pmb W}=(\tilde{\pmb X}^T\tilde{\pmb X})^{-1}\tilde{\pmb X}^T\pmb T=\tilde{\pmb X}^\dagger\pmb T $$ 可得判别函数 $$ \pmb{y(x})=\tilde{\pmb W}^T\tilde{\pmb x}=\pmb T^T(\tilde{\pmb X}^\dagger)^T\tilde{\pmb x} $$   优点：对参数给出了精确的解析解 缺点：对于离群点缺少鲁棒性；会惩罚“过于正确”的预测，因为他们 在正确的⼀侧距离决策边界太远了；它来自于数据呈高斯分布的假设，当假设不成立，效果会相当差</description>
+    </item>
+    
+    <item>
+      <title>PRML读书笔记：3.Linear Models for Regression</title>
+      <link>https://yybeta.github.io/post/prml3linear-models-for-regression/</link>
+      <pubDate>Tue, 30 May 2017 22:00:19 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/post/prml3linear-models-for-regression/</guid>
+      <description>三. Linear Models for Regression  线性基函数模型
+ 将线性模型的输入变量的固定的非线性函数进行线性组合可以扩展模型，即 $y(\pmb{x,w})=\sum_{j=0}^{M-1}w_j\phi_j(\pmb x)=\pmb w^T\pmb{\phi(x)}$ ，其中的 $\phi(\pmb x)$ 被称为基函数，相当于把 $\pmb x$ 映射到一个 $M$ 维空间里，每一维 $\phi_j(\pmb x)$ 都是由原来的 $\pmb x$ 非线性变换得到的（固定$\phi_0(\pmb x)=1$），常见的基函数有“高斯”基函数： $$ \phi_j(x)=exp{-\frac{(x-\mu_j)^2}{2s^2}} $$ sigmoid基函数： $$ \phi_j(x)=\sigma(\frac{x-\mu_j}{s}) $$ 其中 $\sigma(a)$ 可取sigmoid或tanh函数
+ 最大似然与最小平方：同第一章中可得到 $$ \pmb w_{ML}=(\pmb\Phi^T\pmb\Phi)^{-1}\pmb\Phi^T\pmb t $$ 所以最小二乘的解就是广义逆矩阵乘以输出值，在所假设的目标变量 $t=y(\pmb{x,w})+ \mathcal N(\pmb 0,\beta^{-1})$ 上附加的高斯噪声的精度也可以得到最大似然求解 $$ \frac{1}{\beta_{ML}}=\frac{1}{N}\sum_{n=1}^N{t_n-\pmb w_{ML}^T\phi(\pmb x_n)} $$
+ 最小平方的几何描述：$N$个数据的训练集对应到一个 $N$ 维空间，则标签向量 $\pmb t=(t_1,&amp;hellip;,t_N)^T$ ，对 $M$ 维空间里的每一维也都可以构成该坐标系里一个 $N$ 个数据的向量 $(\phi_j(\pmb x_1),&amp;hellip;,\phi_j(\pmb x_N))^T$ ，则当 $M&amp;lt;N$ 时以这 $M$ 个向量为坐标轴，可视为原 $N$ 维子空间里的一个子空间。因为模型的 $N$ 维输出向量 $\pmb y$ 由这 $M$ 个向量线性组合而成，所以它只能对应到这个子空间里的一个向量 $\pmb w$ 。平方和误差函数即 $\pmb{y,t}$ 向量的欧式距离，欲使该距离最小， $\pmb y$ 向量必然是 $\pmb t$ 在 $M$ 维子空间坐标系上的投影，对应的解 $\pmb w$ 即投影坐标</description>
+    </item>
+    
+    <item>
+      <title>PRML读书笔记：2.Probability Distribution</title>
+      <link>https://yybeta.github.io/post/prml2probability-distribution/</link>
+      <pubDate>Fri, 26 May 2017 22:33:19 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/post/prml2probability-distribution/</guid>
+      <description>二. Probability Distributions  二元变量
+ 共轭性：后验概率分布（正比于先验和似然函数的乘积）与引入的先验分布有着相同的函数形式，是一种用来简化贝叶斯分析的人为设计
+ Beta分布：二项分布$Bin(m|N,\mu)=\binom{N}{m}\mu^m(1-\mu)^{N-m}$ ，为了避免小规模数据所求得参数$\mu$的最大似然解引起的过拟合需要对$\mu$假设一个先验分布，为了保证共轭性，以及 $\int_0^1Beta(\mu|a,b)d\mu=1$的归一化性质，构造了先验分布： $$ Beta(\mu|a,b)=\frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}\mu^{a-1}(1-\mu)^{b-1} $$
+   Beta分布的均值和方差：$\mathbb{E}[\mu]=\frac{a}{a+b},var[\mu]=\frac{ab}{(a+b)^2(a+b+1)}$
+ 因此，由贝叶斯定理后验正比于先验与似然的积，并根据其与Beta分布的共轭性可以归一化得： $$ p(\mu|m,l,a,b)=\frac{\Gamma(m+a+l+b)}{\Gamma(m+a)\Gamma(l+b)}\mu^{m+a-1}(1-\mu)^{l+b-1},l=N-m $$ 仍是一个Beta分布 $Beta(\mu|m+a,l+b)$
+由此，可以不停地将后验变为下一次或者下一批学习过程中的先验，因此这种顺序方法对大数据集有用，可以转化成顺序的框架（个人理解是在线学习/数据流那种应用）
+ 贝叶斯的结果和最大似然的结果在数据集的规模趋于无穷的情况下会统一到一起 通常，随着观测到越来越多的数据，后验概率表⽰的不确定性将会持续下降
+ 多项式变量
+ 狄利克雷分布：多项式分布 $Mult(m_1,m_2,&amp;hellip;,m_K|\pmb\mu ,N)=\binom{N}{m_1m_2&amp;hellip;m_K}\prod_{k=1}^K\mu_k^{m_k}$ ，同“二元变量”中所述原因，可构造共轭先验： $$ Dir(\pmb{\mu|\alpha})=\frac{\Gamma(\alpha_0)}{\Gamma(\alpha_1)&amp;hellip;\Gamma(\alpha_K)}\prod_{k=1}^K\mu_k^{\alpha_k-1},\alpha_0=\sum_{k=1}^K\alpha_k $$ 同理，由贝叶斯定理得到的归一化的后验分布仍是一个狄利克雷分布： $$ p(\pmb\mu|\mathcal D,\alpha)=Dir(\pmb{\mu|\alpha+m})=\frac{\Gamma(\alpha_0+N)}{\Gamma(\alpha_1+m_1)&amp;hellip;\Gamma(\alpha_K+m_K)}\prod_{k=1}^K\mu_k^{\alpha_k+m_k-1} $$   有两个状态的变量既可表示为二元变量用二项分布建模也可表示为1-of-2变量用多项式分布建模
+ 高斯分布
+ 一元高斯分布： $$ \mathcal N(x|\mu,\sigma^2)=\frac{1}{(2\pi\sigma^2)^{\frac{1}{2}}}exp{-\frac{1}{2\sigma^2}(x-\mu)^2} $$
+ 多元高斯分布： $$ \mathcal N(\pmb{x|\mu, \Sigma})=\frac{1}{(2\pi)^{\frac{D}{2}}|\pmb\Sigma|^\frac{1}{2}}exp{-\frac{1}{2}(\pmb{x-\mu})^T\pmb\Sigma^{-1}(\pmb{x-\mu})} $$ 令$\Delta^2=(\pmb{x-\mu})^T\pmb\Sigma^{-1}(\pmb{x-\mu})$ ，其中 $\Delta$叫做 $\pmb{\mu,x}$ 间的马氏距离
+   当协方差矩阵 $\pmb\Sigma$ 为单位矩阵时就变成了欧氏距离</description>
+    </item>
+    
+    <item>
+      <title>PRML读书笔记：1.Introduction</title>
+      <link>https://yybeta.github.io/post/prml1introduction/</link>
+      <pubDate>Fri, 12 May 2017 21:52:19 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/post/prml1introduction/</guid>
+      <description>一. Introduction  概率论
+ 由贝叶斯公式 $p(\pmb w|\mathcal D)=\frac{p(\mathcal D|\pmb w)p(\pmb w)}{p(\mathcal D)}$ 得到贝叶斯定理：“后验概率正比于先验概率与似然函数的乘积”
+ 假设观测值 $\pmb t$ 服从高斯分布 $N(y(\pmb{x,w}), \frac{1}{\beta})$ ，则最大化似然函数 $$ \ln p(\pmb{t|x,w},\beta)=-\frac{\beta}{2}\sum_{n=1}^N{y(\pmb x_n,\pmb w)-t_n}^2+\frac{N}{2}\ln\beta-\frac{N}{2}\ln(2\pi) $$ 等价于最小化平方和误差 $\frac{1}{2}\sum_{n=1}^N{y(\pmb x_n,\pmb w)-t_n}^2$
+ 假设 $\pmb{w}$ 先验分布为 $N(\pmb 0,\alpha^{-1}\pmb I)$ ，则最大化先验概率 $$ \ln p(\pmb w|\alpha)=\frac{M+1}{2}\ln\frac{\alpha}{2\pi}-\frac{\alpha}{2}\pmb w^T\pmb w $$ 等价于最小化 $\pmb w^T\pmb w$
+ 由贝叶斯定理 $p(\pmb{w|x,t},\alpha,\beta)\propto p(\pmb{t|x,w},\beta)p(\pmb w|\alpha)$ ，寻找最可能的 $\pmb w$ 值即最大化左边即最小化右边的负对数，结合前面所述，最大化后验概率即最小化下式： $$ \frac{\beta}{2}\sum_{n=1}^N{y(\pmb{x_n,w})-t_n}^2+\frac{\alpha}{2}\pmb w^T\pmb w $$
+   由此，最大化后验概率等价于最小化正则化的平方和误差函数（ $\lambda=\frac{\alpha}{\beta}$ ）。</description>
+    </item>
+    
+    <item>
+      <title>关于</title>
+      <link>https://yybeta.github.io/about/</link>
+      <pubDate>Mon, 24 Apr 2017 17:28:02 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/about/</guid>
+      <description>1. 关于 - 我 数据挖掘在读研究生，极客一枚，老实说比起科研还是更喜欢技术233333。酷爱鼓捣各种前后端全栈和杂七杂八的小玩意儿，努力奔跑在成为菊苣的道路上……
+2. 关于 - 本站 个人博客，做一些简单的记录或分享，基于 hugo 博客系统搭建。</description>
+    </item>
+    
+    <item>
+      <title>Hello Hugo</title>
+      <link>https://yybeta.github.io/post/hello-hugo/</link>
+      <pubDate>Mon, 24 Apr 2017 17:13:19 +0800</pubDate>
+      
+      <guid>https://yybeta.github.io/post/hello-hugo/</guid>
+      <description>VPS到期之后就很久没写过博客了，其实主要是懒- -
+关注 golang 之余偶然发现静态博客 hugo 不错，配置起来省心，生成速度又快。
+心血来潮，索性重新在github pages搭了个，也好留个可以写东西的地儿。</description>
+    </item>
+    
+  </channel>
+</rss>
