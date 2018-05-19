@@ -147,11 +147,11 @@ f(a)=\left\{\begin{matrix}+1&amp;a\ge0\\-1&amp;a<0\end{matrix}\right.
 $$
 因为激活函数分段而不使用最小平方误差准则，使用感知机准则定义损失函数
 $$
-E\_P(\pmb w)=-\sum\_{n\in\mathcal M}\pmb w^T\pmb\phi\_nt\_n
+E_P(\pmb w)=-\sum_{n\in\mathcal M}\pmb w^T\pmb\phi_nt_n
 $$
 $\mathcal M$ 为分类错误的数据集合。则 $\pmb w$ 可以采用随机梯度下降算法求解：
 $$
-\pmb w^{(\tau+1)}=\pmb w^{(\tau)}-\eta\nabla E\_P(\pmb w)=\pmb w^{(\tau)}+\eta\pmb\phi\_nt\_n
+\pmb w^{(\tau+1)}=\pmb w^{(\tau)}-\eta\nabla E_P(\pmb w)=\pmb w^{(\tau)}+\eta\pmb\phi_nt_n
 $$
 > 当数据线性可分时感知机算法收敛，反之不收敛</p></li>
 </ul></li>
@@ -510,7 +510,7 @@ $$
       messageStyle: 'none'
     };
   </script>
-  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
 
 <script type="text/javascript" src="/js/prism.js" async="true"></script>
