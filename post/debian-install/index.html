@@ -161,7 +161,14 @@ apt install sudo vim
 <pre><code class="language-shell">  sudo apt install uget aria2 gtk-redshift foxitreader netease-cloud-music sogoupinyin code google-chrome-stable wps-office
 </code></pre>
 
-<p>打开uget<code>编辑&gt; 设置&gt; 插件&gt; aria2</code>以及<code>分类&gt; 全部分类&gt; 属性&gt; 默认一般设置&gt; 最大连接数&gt; 8</code></p>
+<p>打开uget<code>编辑&gt; 设置&gt; 插件&gt; aria2</code>以及<code>分类&gt; 全部分类&gt; 属性&gt; 默认一般设置&gt; 最大连接数&gt; 16</code></p>
+
+<pre><code class="language-shell">  # 安装uget的chrome调用控件
+  wget https://raw.githubusercontent.com/ugetdm/uget-integrator/master/install/linux/install_uget_integrator.sh
+  chmod +x install_uget_integrator.sh
+  ./install_uget_integrator.sh
+  # 之后再在chrome里用本地方式安装uget integration扩展就可以自动调用uget下载并且该扩展不会被同步到其它windows机器
+</code></pre>
 
 <p>运行redshift并设置色温<code>redshif-gtk -t 5500:3500 &amp;</code>，然后勾选开机启动</p>
 
